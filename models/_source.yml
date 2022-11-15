@@ -1,9 +1,9 @@
 version: 2
 
 sources:
-  - name: "{{ var('source_name') }}"
-    database: "{{ var('input_database') }}"
-    schema: "{{ var('input_schema') }}"
+  - name: core
+    database: "{{ var('chronic_conditions_input_database','tuva') }}"
+    schema: "{{ var('chronic_conditions_input_schema','core') }}"
     tables:
       - name: condition
         description: > 
@@ -93,8 +93,8 @@ sources:
             description: >
               Indicates the name of the source dataset (e.g. Medicare Claims).
 
-  - name: tuva_terminology      # configuration required
-    database: tuva              # name of the terminology database
-    schema: terminology         # name of the terminology schema
-    tables:
-      - name: chronic_conditions
+#  - name: tuva_terminology      # configuration required
+#    database: tuva              # name of the terminology database
+#    schema: terminology         # name of the terminology schema
+#    tables:
+#      - name: chronic_conditions

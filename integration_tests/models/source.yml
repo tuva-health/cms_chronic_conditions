@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: core
+    database: "{{ var('data_profiling_input_database','tuva') }}"
+    schema:  "{{ var('data_profiling_input_schema','core') }}"
+    tables:
+      - name: condition
+      - name: encounter
+      - name: medication
+      - name: procedure

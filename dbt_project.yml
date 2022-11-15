@@ -7,10 +7,6 @@ config-version: 2
 profile: 'default'
 
 vars:
-  source_name: core                  # configuration required
-                                     # name describing the dataset feeding
-                                     # this project - typically matches input
-                                     # schema name
 
   input_database: tuva               # configuration required
                                      # name of the database where sources
@@ -28,10 +24,10 @@ vars:
                                      # name of the schema where output of this
                                      # project should be written
 
-  condition: "{{ source(var('source_name'),'condition') }}"
-  encounter: "{{ source(var('source_name'),'encounter') }}"
-  medication: "{{ source(var('source_name'),'medication') }}"
-  procedure: "{{ source(var('source_name'),'procedure') }}"
+  condition: "{% if project_name == 'chronic_conditions' %}{{ source('core','condition') }}{% else %}{{ ref('claims_preprocessing__condition') }}{% endif %}"
+  encounter: "{% if project_name == 'chronic_conditions' %}{{ source('core','encounter') }}{% else %}{{ ref('claims_preprocessing__encounter') }}{% endif %}"
+  medication: "{% if project_name == 'chronic_conditions' %}{{ source('core','medication') }}{% else %}{{ ref('claims_preprocessing__medication') }}{% endif %}"
+  procedure: "{% if project_name == 'chronic_conditions' %}{{ source('core','procedure') }}{% else %}{{ ref('claims_preprocessing__procedure') }}{% endif %}"
 
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be

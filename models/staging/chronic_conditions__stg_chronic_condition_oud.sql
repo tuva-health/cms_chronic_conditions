@@ -1,5 +1,7 @@
 {{ config(materialized='table') }}
 
+--depends_on: {{ var('medication') }}
+
 {%- set condition_filter = 'Opioid Use Disorder (OUD)' -%}
 
 {%- set naltrexone_ndcs = (
@@ -26,11 +28,11 @@
       identifier="medication"
     ) -%}
 
-{%- set table_exists=source_relation is not none -%}
+{%- set table_exists=source_relation is not none %}
 
 with chronic_conditions as (
 
-    select * from {{ source('tuva_terminology','chronic_conditions') }}
+    select * from {{ ref('terminology__chronic_conditions') }}
     where condition = '{{ condition_filter }}'
 
 ),
@@ -156,7 +158,7 @@ inclusions_medication as (
 exclusions_other_chronic_conditions as (
 
     select distinct patient_id
-    from {{ ref('stg_chronic_condition_all') }}
+    from {{ ref('chronic_conditions__stg_chronic_condition_all') }}
     where condition in (
           'Alcohol Use Disorders'
         , 'Drug Use Disorders'
