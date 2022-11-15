@@ -7,22 +7,22 @@ config-version: 2
 profile: 'default'
 
 vars:
-
-  input_database: tuva               # configuration required
-                                     # name of the database where sources
-                                     # feeding this project are stored
-
-  input_schema: core                 # configuration required
-                                     # name of the schema where sources
-                                     # feeding this project is stored
-
-  output_database: tuva              # configuration required
-                                     # name of the database where output of
-                                     # this project should be written
-
-  output_schema: chronic_conditions  # configuration required
-                                     # name of the schema where output of this
-                                     # project should be written
+#
+#  input_database: tuva               # configuration required
+#                                     # name of the database where sources
+#                                     # feeding this project are stored
+#
+#  input_schema: core                 # configuration required
+#                                     # name of the schema where sources
+#                                     # feeding this project is stored
+#
+#  output_database: tuva              # configuration required
+#                                     # name of the database where output of
+#                                     # this project should be written
+#
+#  output_schema: chronic_conditions  # configuration required
+#                                     # name of the schema where output of this
+#                                     # project should be written
 
   condition: "{% if project_name == 'chronic_conditions' %}{{ source('core','condition') }}{% else %}{{ ref('claims_preprocessing__condition') }}{% endif %}"
   encounter: "{% if project_name == 'chronic_conditions' %}{{ source('core','encounter') }}{% else %}{{ ref('claims_preprocessing__encounter') }}{% endif %}"
