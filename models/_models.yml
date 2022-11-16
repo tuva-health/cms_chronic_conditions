@@ -7,19 +7,16 @@ models:
       schema: |
         {%- if var('chronic_conditions_schema',None) != None -%}{{var('chronic_conditions_schema')}}{%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions{% else %}chronic_conditions{%- endif -%}
       alias: chronic_conditions_pivoted
-      enabled: "{{ var('chronic_conditions_enabled',var('tuva_packages_enabled',True)) }}"
       tags: chronic_conditions
     description: >
       This model pivots conditions on the patient level (i.e. one record per 
       patient) with flags for each chronic condition.
-
     columns:
         - name: patient_id
           description: Unique ID for the patient.
           tests:
             - unique
             - not_null
-
         - name: acute_myocardial_infarction
           description: chronic condition flag 1 or 0
 
@@ -251,7 +248,6 @@ models:
       schema: |
         {%- if var('chronic_conditions_schema',None) != None -%}{{var('chronic_conditions_schema')}}{%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions{% else %}chronic_conditions{%- endif -%}
       alias: chronic_conditions_unioned
-      enabled: "{{ var('chronic_conditions_enabled',var('tuva_packages_enabled',True)) }}"
       tags: chronic_conditions
     description: >
       This model unions condition flags from the 3 upstream stage models that
@@ -301,7 +297,6 @@ models:
       schema: |
         {%- if var('chronic_conditions_schema',None) != None -%}{{var('chronic_conditions_schema')}}{%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions{% else %}chronic_conditions{%- endif -%}
       alias: stg_chronic_condition_all
-      enabled: "{{ var('chronic_conditions_enabled',var('tuva_packages_enabled',True)) }}"
       tags: chronic_conditions
     description: >
       This model contains logic for all chronic conditions where 
@@ -347,7 +342,6 @@ models:
       schema: |
         {%- if var('chronic_conditions_schema',None) != None -%}{{var('chronic_conditions_schema')}}{%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions{% else %}chronic_conditions{%- endif -%}
       alias: stg_chronic_condition_hiv_aids
-      enabled: "{{ var('chronic_conditions_enabled',var('tuva_packages_enabled',True)) }}"
       tags: chronic_conditions
     description: >
       This model contains logic for the chronic condition Human
@@ -394,7 +388,6 @@ models:
       schema: |
         {%- if var('chronic_conditions_schema',None) != None -%}{{var('chronic_conditions_schema')}}{%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions{% else %}chronic_conditions{%- endif -%}
       alias: stg_chronic_condition_oud
-      enabled: "{{ var('chronic_conditions_enabled',var('tuva_packages_enabled',True)) }}"
       tags: chronic_conditions
     description: >
       This model contains logic for the chronic condition Opioid Use Disorder 
