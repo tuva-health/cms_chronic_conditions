@@ -92,9 +92,3 @@ sources:
           - name: data_source
             description: >
               Indicates the name of the source dataset (e.g. Medicare Claims).
-
-#  - name: tuva_terminology      # configuration required
-#    database: tuva              # name of the terminology database
-#    schema: terminology         # name of the terminology schema
-#    tables:
-#      - name: chronic_conditions
