@@ -13,17 +13,17 @@ vars:
 #  tuva_database: tuva                                      # optional: name of the database where tables from this package will be written
 #                                                           # default: tuva
 #
-  tuva_schema_prefix: package_test                               # optional: prefix (+_) that will be prerpended to all tuva package schema defaults
+#  tuva_schema_prefix: test                                 # optional: prefix (+_) that will be prerpended to all tuva package schema defaults
 #                                                           # default schema: core (no prefix by default
 #
 #
 #
 ## optional output config option 2 (package specific config), overrides option 1
 #
-#  chronic_conditions_database: tuva                            # optional: name of the database where tables from this package will be written
+#  chronic_conditions_database: tuva                        # optional: name of the database where tables from this package will be written
 #                                                           # default: tuva
 #
-#  chronic_conditions_schema: pkg_core_test                     # optional: name of the schema where tables from this package will be written
+#  chronic_conditions_schema: test_chronic_conditions       # optional: name of the schema where tables from this package will be written
 #                                                           # default: core
 #
 
@@ -34,10 +34,10 @@ vars:
 
 
 ### optional overrides for input data, only for use as a project
-#  chronic_conditions_input_database: tuva                  # optional: name of the database where sources feeding this prorject are stored
+#  chronic_conditions_input_database: tuva             # optional: name of the database where sources feeding this prorject are stored
 #                                                      # default: tuva
 
-#  chronic_conditions_input_schema: claims_input            # optional: name of the schema where sources feeding this project are stored
+#  chronic_conditions_input_schema: test_claims_input  # optional: name of the schema where sources feeding this project are stored
 #                                                      # default: claims_input
 
 

@@ -2,36 +2,42 @@ name: 'chronic_conditions'
 version: '1.0.0'
 config-version: 2
 
-# This setting configures which "profile" dbt uses for this project.
-# Configuration required for CLI users.  Cloud users can leave as 'default'
+
 profile: 'default'
 
 vars:
+
+### optional overrides for input data, only for integration_test or use as a project
+#  chronic_conditions_input_database: tuva                 # optional: name of the database where sources feeding this prorject are stored
+#                                                          # default: tuva
 #
-#  input_database: tuva               # configuration required
-#                                     # name of the database where sources
-#                                     # feeding this project are stored
+#  chronic_conditions_input_schema: test_core              # optional: name of the schema where sources feeding this project are stored
+#                                                          # default: core
+
+
+
+## optional output config option 1 (all tuva packages)
+#  tuva_database: tuva                                     # optional: name of the database where tables from this package will be written
+#                                                          # default: tuva
 #
-#  input_schema: core                 # configuration required
-#                                     # name of the schema where sources
-#                                     # feeding this project is stored
+#  tuva_schema_prefix: test                                # optional: name of the schema where tables from this package will be written
+#                                                          # default: chronic_conditions
+
+
+## optional output config option 2 (package specific config), overrides option 1
+#  chronic_conditions_database: tuva                       # optional: name of the database where tables from this package will be written
+#                                                          # default: tuva
 #
-#  output_database: tuva              # configuration required
-#                                     # name of the database where output of
-#                                     # this project should be written
-#
-#  output_schema: chronic_conditions  # configuration required
-#                                     # name of the schema where output of this
-#                                     # project should be written
+#  chronic_conditions_schema: test_chronic_conditions      # optional: name of the schema where tables from this package will be written
+#                                                          # default: chronic
 
   condition: "{% if project_name == 'chronic_conditions' %}{{ source('core','condition') }}{% else %}{{ ref('claims_preprocessing__condition') }}{% endif %}"
   encounter: "{% if project_name == 'chronic_conditions' %}{{ source('core','encounter') }}{% else %}{{ ref('claims_preprocessing__encounter') }}{% endif %}"
   prescription: "{% if project_name == 'chronic_conditions' %}{{ source('core','prescription') }}{% else %}{{ ref('claims_preprocessing__prescription') }}{% endif %}"
   procedure: "{% if project_name == 'chronic_conditions' %}{{ source('core','procedure') }}{% else %}{{ ref('claims_preprocessing__procedure') }}{% endif %}"
 
-# These configurations specify where dbt should look for different types of files.
-# The `source-paths` config, for example, states that models in this project can be
-# found in the "models/" directory. You probably won't need to change these!
+
+
 model-paths: ["models"]
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
