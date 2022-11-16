@@ -50,7 +50,7 @@ sources:
             description: >
               Indicates the name of the source dataset (e.g. Medicare Claims).
 
-      - name: medication
+      - name: prescription
         description: >
           Info about medication requests, administrations, and prescriptions.
         columns:

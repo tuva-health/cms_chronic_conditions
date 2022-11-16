@@ -1,4 +1,4 @@
-{{ config(materialized='table') }}
+{{ config(enabled = var('chronic_conditions_enabled',var('tuva_packages_enabled',True)) ) }}
 
 {%- set condition_filter = 'Human Immunodeficiency Virus and/or Acquired Immunodeficiency Syndrome (HIV/AIDS)' -%}
 

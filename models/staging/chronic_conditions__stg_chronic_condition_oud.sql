@@ -1,6 +1,6 @@
-{{ config(materialized='table') }}
+{{ config(enabled = var('chronic_conditions_enabled',var('tuva_packages_enabled',True)) ) }}
 
---depends_on: {{ var('medication') }}
+--depends_on: {{ var('prescription') }}
 
 {%- set condition_filter = 'Opioid Use Disorder (OUD)' -%}
 
@@ -23,9 +23,9 @@
 #}
 
 {%- set source_relation = adapter.get_relation(
-      database=var("input_database"),
-      schema=var("input_schema"),
-      identifier="medication"
+      database=var("input_database","tuva"),
+      schema=var("input_schema","core"),
+      identifier="prescription"
     ) -%}
 
 {%- set table_exists=source_relation is not none %}
@@ -63,21 +63,21 @@ patient_encounters as (
 */
 patient_medications as (
 
-    {% if table_exists %}
+    {% if table_exists or project_name == 'data_profiling' %}
 
     select
-          encounter_id
-        , patient_id
-        , coalesce(filled_date, paid_date) as encounter_start_date
+        cast(null as varchar)  encounter_id,
+          patient_id
+        , paid_date as encounter_start_date
         , replace(ndc_code,'.','') as ndc_code
         , data_source
-    from {{ var('medication') }}
+    from {{ var('prescription') }}
 
     {% else %}
 
     select
-          null::varchar as encounter_id
-        , null::varchar as patient_id
+          null::varchar as encounter_id,
+          null::varchar as patient_id
         , null::date as encounter_start_date
         , null::varchar as ndc_code
         , null::varchar as data_source

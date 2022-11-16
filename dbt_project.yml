@@ -26,7 +26,7 @@ vars:
 
   condition: "{% if project_name == 'chronic_conditions' %}{{ source('core','condition') }}{% else %}{{ ref('claims_preprocessing__condition') }}{% endif %}"
   encounter: "{% if project_name == 'chronic_conditions' %}{{ source('core','encounter') }}{% else %}{{ ref('claims_preprocessing__encounter') }}{% endif %}"
-  medication: "{% if project_name == 'chronic_conditions' %}{{ source('core','medication') }}{% else %}{{ ref('claims_preprocessing__medication') }}{% endif %}"
+  prescription: "{% if project_name == 'chronic_conditions' %}{{ source('core','prescription') }}{% else %}{{ ref('claims_preprocessing__prescription') }}{% endif %}"
   procedure: "{% if project_name == 'chronic_conditions' %}{{ source('core','procedure') }}{% else %}{{ ref('claims_preprocessing__procedure') }}{% endif %}"
 
 # These configurations specify where dbt should look for different types of files.
@@ -43,3 +43,7 @@ target-path: "target"  # directory which will store compiled SQL files
 clean-targets:         # directories to be removed by `dbt clean`
     - "target"
     - "dbt_modules"
+
+models:
+  chronic_conditions:
+    +materialized: table

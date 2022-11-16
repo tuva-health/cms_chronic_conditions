@@ -1,4 +1,4 @@
-{{ config(materialized='table') }}
+{{ config(enabled = var('chronic_conditions_enabled',var('tuva_packages_enabled',True)) ) }}
 
 with chronic_conditions as (
 
