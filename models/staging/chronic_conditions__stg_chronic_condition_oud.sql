@@ -68,7 +68,7 @@ patient_medications as (
     select
         cast(null as varchar)  encounter_id,
           patient_id
-        , paid_date as encounter_start_date
+        , cast(paid_date as date) as encounter_start_date
         , replace(ndc_code,'.','') as ndc_code
         , data_source
     from {{ var('prescription') }}
