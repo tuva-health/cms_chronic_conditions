@@ -5,10 +5,31 @@ profile: 'default'
 
 
 vars:
-  condition: "{{ var('chronic_conditions_condition_override', var('core_condition_override', ref('claims_preprocessing__condition'))) }}"
-  encounter: "{{ var('chronic_conditions_encounter_override', var('core_encounter_override', ref('claims_preprocessing__encounter'))) }}"
-  prescription: "{{ var('chronic_conditions_prescription_override', var('core_prescription_override', ref('claims_preprocessing__prescription'))) }}"
-  procedure: "{{ var('chronic_conditions_procedure_override', var('core_procedure_override', ref('claims_preprocessing__procedure'))) }}"
+    prescription: |
+        {% if var('readmissions_prescription_override') is not none %}{{var('readmissions_prescription_override')}}
+        {%- elif var('core_prescription_override') is not none %}{{var('core_prescription_override')}}
+        {%- else %}{{ref('claims_preprocessing__prescription')}}
+        {% endif %}
+    encounter: |
+        {% if var('readmissions_encounter_override') is not none %}{{var('readmissions_encounter_override')}}
+        {%- elif var('core_encounter_override') is not none %}{{var('core_encounter_override')}}
+        {%- else %}{{ref('claims_preprocessing__encounter')}}
+        {% endif %}
+    condition: |
+        {% if var('readmissions_condition_override') is not none %}{{var('readmissions_condition_override')}}
+        {%- elif var('core_condition_override') is not none %}{{var('core_condition_override')}}
+        {%- else %}{{ref('claims_preprocessing__condition')}}
+        {% endif %}
+    procedure: |
+        {% if var('readmissions_condition_override') is not none %}{{var('readmissions_condition_override')}}
+        {%- elif var('core_condition_override') is not none %}{{var('core_condition_override')}}
+        {%- else %}{{ref('claims_preprocessing__condition')}}
+        {% endif %}  
+  
+#  condition: "{{ var('chronic_conditions_condition_override', var('core_condition_override', ref('claims_preprocessing__condition'))) }}"
+#  encounter: "{{ var('chronic_conditions_encounter_override', var('core_encounter_override', ref('claims_preprocessing__encounter'))) }}"
+#  prescription: "{{ var('chronic_conditions_prescription_override', var('core_prescription_override', ref('claims_preprocessing__prescription'))) }}"
+#  procedure: "{{ var('chronic_conditions_procedure_override', var('core_procedure_override', ref('claims_preprocessing__procedure'))) }}"
 
 
 model-paths: ["models"]
