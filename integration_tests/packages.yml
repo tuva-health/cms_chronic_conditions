@@ -1,2 +1,4 @@
 packages:
-    - local: ../
+  - local: ../
+  - git: "https://github.com/tuva-health/terminology.git"
+    revision: modularization

@@ -2,44 +2,52 @@ name: 'integration_tests'
 version: '1.0.0'
 config-version: 2
 
-profile: 'default_redshift'
+profile: 'default'
 
 
 
 vars:
 
-## optional output config option 1 (configs apply to all tuva packages)
-#
-#  tuva_database: tuva                                      # optional: name of the database where tables from this package will be written
-#                                                           # default: tuva
-#
-#  tuva_schema_prefix: test                                 # optional: prefix (+_) that will be prerpended to all tuva package schema defaults
-#                                                           # default schema: core (no prefix by default
-#
-#
-#
-## optional output config option 2 (package specific config), overrides option 1
-#
-#  chronic_conditions_database: tuva                        # optional: name of the database where tables from this package will be written
-#                                                           # default: tuva
-#
-#  chronic_conditions_schema: test_chronic_conditions       # optional: name of the schema where tables from this package will be written
-#                                                           # default: core
-#
+### output config option 1, applies to all tuva packages
+  tuva_database: dev_forrest
+  tuva_schema_prefix: test
+
+### output config option 2, applies to chronic_conditions, overrides option 1
+#  chronic_conditions_database: tuva
+#  chronic_conditions_schema: test_chronic_conditions
+
+
+### input config option 1, applies to all SmartMarts
+#  core_condition_override: "{{ref('condition')}}"
+#  core_patient_override:   "{{ref('prescription')}}"
+#  core_encounter_override: "{{ref('encounter')}}"
+#  core_procedure_override: "{{ref('procedure')}}"
+
+## you can also point these to sources
+#  core_condition_override: "{{source('core','condition')}}"
+#  core_patient_override:   "{{source('core','prescription')}}"
+#  core_encounter_override: "{{source('core','encounter')}}"
+#  core_procedure_override: "{{source('core','procedure')}}"
+
+
+### input config option 2, applies to chronic_conditions, overrides option 1
+#  chronic_conditions_condition_override: "{{ref('condition')}}"
+#  chronic_conditions_patient_override:   "{{ref('prescription')}}"
+#  chronic_conditions_encounter_override: "{{ref('encounter')}}"
+#  chronic_conditions_procedure_override: "{{ref('procedure')}}"
 
 
 
+### enabled/disabled configs
+## applies to all packages
+  tuva_packages_enabled: false
 
+## applies to chronic_conditions only
+  chronic_conditions_enabled: true
 
-
-
-### optional overrides for input data, only for use as a project
-#  chronic_conditions_input_database: tuva             # optional: name of the database where sources feeding this prorject are stored
-#                                                      # default: tuva
-
-#  chronic_conditions_input_schema: test_claims_input  # optional: name of the schema where sources feeding this project are stored
-#                                                      # default: claims_input
-
+dispatch:
+  - macro_namespace: dbt
+    search_order: [ 'chronic_conditions', 'dbt']
 
 
 model-paths: ["models"]
@@ -49,11 +57,12 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-target-path: "target"  # directory which will store compiled SQL files
-clean-targets:         # directories to be removed by `dbt clean`
+target-path: "target"
+clean-targets:
   - "target"
   - "dbt_packages"
 
 models:
   integration_tests:
-    +materialized: ephemeral
+#    +materialized: ephemeral
+    +database: dev_forrest
