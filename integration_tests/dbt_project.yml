@@ -9,7 +9,7 @@ profile: 'default'
 vars:
 
 ### output config option 1, applies to all tuva packages
-  tuva_database: dev_forrest
+  tuva_database: dev_user
   tuva_schema_prefix: test
 
 ### output config option 2, applies to chronic_conditions, overrides option 1
@@ -44,6 +44,7 @@ vars:
 
 ## applies to chronic_conditions only
   chronic_conditions_enabled: true
+#  terminology enabled: false
 
 dispatch:
   - macro_namespace: dbt
@@ -64,5 +65,5 @@ clean-targets:
 
 models:
   integration_tests:
-#    +materialized: ephemeral
-    +database: dev_forrest
+    +materialized: ephemeral
+#    +database: dev_user
