@@ -1,2 +1,2 @@
-select encounter_id, CODE,  code_type
+select encounter_id, code, code_type
 from tuva.core.condition
