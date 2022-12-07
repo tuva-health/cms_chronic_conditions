@@ -1,3 +1,3 @@
-select encounter_id, PATIENT_ID,ENCOUNTER_START_DATE
-     ,MS_DRG_CODE,data_source
+select encounter_id, patient_id, encounter_start_date
+     , ms_drg_code, data_source
 from tuva.core.encounter
