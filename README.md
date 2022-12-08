@@ -20,7 +20,7 @@ This package requires you to have dbt installed and a functional dbt project run
 
 ## ✅ How do I use this dbt package?
 
-Below are the steps to run this individual dbt package.  To run all packages in The Tuva Project, please refer to this README.
+Below are the steps to run this individual dbt package.  To run all packages in The Tuva Project, please refer to this [README](https://github.com/tuva-health/the_tuva_project#readme).
 
 ### Overview
 
