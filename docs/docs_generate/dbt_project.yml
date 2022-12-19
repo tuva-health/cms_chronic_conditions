@@ -9,10 +9,10 @@ profile: 'default'
 vars:
 #  tuva_packages_enabled: false
 #  chronic_conditions_enabled: true
-  chronic_conditions_condition_override: "{{ref('condition')}}"
-  chronic_conditions_prescription_override:   "{{ref('prescription')}}"
-  chronic_conditions_encounter_override: "{{ref('encounter')}}"
-  chronic_conditions_procedure_override: "{{ref('procedure')}}"
+  cms_chronic_conditions_condition_override: "{{ref('condition')}}"
+  cms_chronic_conditions_prescription_override:   "{{ref('prescription')}}"
+  cms_chronic_conditions_encounter_override: "{{ref('encounter')}}"
+  cms_chronic_conditions_procedure_override: "{{ref('procedure')}}"
 
 dispatch:
   - macro_namespace: dbt

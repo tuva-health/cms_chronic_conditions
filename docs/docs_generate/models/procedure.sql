@@ -1,2 +1,2 @@
 select encounter_id, code, code_type
-     from  tuva.core.procedure
+from tuva_claims_demo_sample.core.procedure

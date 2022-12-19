@@ -4,10 +4,11 @@ models:
   - name: condition
     config:
       database: tuva
-      schema: chronic_conditions_input
+      schema: cms_chronic_conditions_input
     description: > 
-      The chronic_conditions package uses the condition output from claims_preprocessing as an input.  
-      If claims preprocessing is bypassed and a custom condition model is used, this model represents the minimum required data elements needed for chronic_conditions to function.
+      The cms_chronic_conditions package uses the condition output from claims_preprocessing as an input.  
+      If claims preprocessing is bypassed and a custom condition model is used, this model represents the minimum required data elements 
+        needed for cms_chronic_conditions to function.
     columns:
       - name: encounter_id
         description: The unique identifier for the encounter
@@ -20,10 +21,11 @@ models:
   - name: encounter
     config:
       database: tuva
-      schema: chronic_conditions_input
+      schema: cms_chronic_conditions_input
     description: > 
-      The chronic_conditions package uses the encounter output from claims_preprocessing as an input.  
-      If claims preprocessing is bypassed and a custom encounter model is used, this model represents the minimum required data elements needed for chronic_conditions to function.
+      The cms_chronic_conditions package uses the encounter output from claims_preprocessing as an input.  
+      If claims preprocessing is bypassed and a custom encounter model is used, this model represents the minimum required data elements 
+        needed for cms_chronic_conditions to function.
     columns:
       - name: encounter_id
         description: Unique ID for each visit.
@@ -39,10 +41,11 @@ models:
   - name: prescription
     config:
       database: tuva
-      schema: chronic_conditions_input
+      schema: cms_chronic_conditions_input
     description: > 
-      The chronic_conditions package uses the prescription output from claims_preprocessing as an input.  
-      If claims preprocessing is bypassed and a custom prescription model is used, this model represents the minimum required data elements needed for chronic_conditions to function.
+      The cms_chronic_conditions package uses the prescription output from claims_preprocessing as an input.  
+      If claims preprocessing is bypassed and a custom prescription model is used, this model represents the minimum required data elements
+        needed for cms_chronic_conditions to function.
     columns:
       - name: encounter_id
         description: Unique ID for each visit.
@@ -58,10 +61,11 @@ models:
   - name: procedure
     config:
       database: tuva
-      schema: chronic_conditions_input
+      schema: cms_chronic_conditions_input
     description: > 
-      The chronic_conditions package uses the procedure output from claims_preprocessing as an input.  
-      If claims preprocessing is bypassed and a custom procedure model is used, this model represents the minimum required data elements needed for chronic_conditions to function.
+      The cms_chronic_conditions package uses the procedure output from claims_preprocessing as an input.  
+      If claims preprocessing is bypassed and a custom procedure model is used, this model represents the minimum required data elements
+        needed for cms_chronic_conditions to function.
     columns:
       - name: encounter_id
         description: Unique ID for each visit.
