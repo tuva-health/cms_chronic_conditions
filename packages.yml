@@ -1,3 +1,5 @@
 packages:
-  - package: tuva-health/terminology
-    version: [">=0.1.2","<1.0.0"]
+#  - package: tuva-health/terminology
+#    version: [">=0.1.2","<1.0.0"]
+  - git: "https://github.com/tuva-health/terminology.git"
+    revision:  rename-to-cms_chronic_conditions

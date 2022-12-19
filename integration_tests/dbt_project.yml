@@ -7,48 +7,29 @@ profile: 'default'
 
 
 vars:
+## List of optional vars
+# tuva_database: dev_user
+# tuva_schema_prefix: test
+# <package_name>_database: dev_user
+# <package_name>_schema: test
 
-### output config option 1, applies to all tuva packages
-  tuva_database: dev_user
-  tuva_schema_prefix: test
+## The two vars below can reference a ref or source
+# core_<table_name>_override: "{{ref('<table_name>')}}"
+# <package_name>_<table_name>_override: "{{source('<source>','table_name')}}"
 
-### output config option 2, applies to chronic_conditions, overrides option 1
-#  chronic_conditions_database: tuva
-#  chronic_conditions_schema: test_chronic_conditions
+## Execute the enabled tests in succession
+# tuva_packages_enabled: false
+# <package_name>_enabled: true
 
-
-### input config option 1, applies to all SmartMarts
-#  core_condition_override: "{{ref('condition')}}"
-#  core_patient_override:   "{{ref('prescription')}}"
-#  core_encounter_override: "{{ref('encounter')}}"
-#  core_procedure_override: "{{ref('procedure')}}"
-
-## you can also point these to sources
-#  core_condition_override: "{{source('core','condition')}}"
-#  core_patient_override:   "{{source('core','prescription')}}"
-#  core_encounter_override: "{{source('core','encounter')}}"
-#  core_procedure_override: "{{source('core','procedure')}}"
-
-
-### input config option 2, applies to chronic_conditions, overrides option 1
-#  chronic_conditions_condition_override: "{{ref('condition')}}"
-#  chronic_conditions_patient_override:   "{{ref('prescription')}}"
-#  chronic_conditions_encounter_override: "{{ref('encounter')}}"
-#  chronic_conditions_procedure_override: "{{ref('procedure')}}"
+## Only needed if package uses Terminology package
+# terminology_enabled: false
 
 
 
-### enabled/disabled configs
-## applies to all packages
-  tuva_packages_enabled: false
-
-## applies to chronic_conditions only
-  chronic_conditions_enabled: true
-#  terminology enabled: false
 
 dispatch:
   - macro_namespace: dbt
-    search_order: [ 'chronic_conditions', 'dbt']
+    search_order: [ 'cms_chronic_conditions', 'dbt']
 
 
 model-paths: ["models"]
@@ -66,4 +47,3 @@ clean-targets:
 models:
   integration_tests:
     +materialized: ephemeral
-#    +database: dev_user

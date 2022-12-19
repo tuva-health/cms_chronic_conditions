@@ -1,4 +1,4 @@
-{{ config(enabled = var('chronic_conditions_enabled',var('tuva_packages_enabled',True)) ) }}
+{{ config(enabled = var('cms_chronic_conditions_enabled',var('tuva_packages_enabled',True)) ) }}
 
 --depends_on: {{ var('prescription') }}
 
@@ -32,7 +32,7 @@
 
 with chronic_conditions as (
 
-    select * from {{ ref('terminology__chronic_conditions') }}
+    select * from {{ ref('terminology__cms_chronic_conditions') }}
     where condition = '{{ condition_filter }}'
 
 ),
@@ -158,7 +158,7 @@ inclusions_medication as (
 exclusions_other_chronic_conditions as (
 
     select distinct patient_id
-    from {{ ref('chronic_conditions__stg_chronic_condition_all') }}
+    from {{ ref('cms_chronic_conditions__stg_chronic_condition_all') }}
     where condition in (
           'Alcohol Use Disorders'
         , 'Drug Use Disorders'

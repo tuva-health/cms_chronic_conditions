@@ -1,13 +1,16 @@
 version: 2
 
 models:
-  - name: chronic_conditions__chronic_conditions_pivoted
+  - name: cms_chronic_conditions__chronic_conditions_pivoted
     config:
-      database: "{{ var('chronic_conditions_database',var('tuva_database','tuva')) }}"
+      database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
       schema: |
-        {%- if var('chronic_conditions_schema',None) != None -%}{{var('chronic_conditions_schema')}}{%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions{% else %}chronic_conditions{%- endif -%}
+        {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
+        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_cms_chronic_conditions
+        {% else %}cms_chronic_conditions{%- endif -%}
       alias: chronic_conditions_pivoted
-      tags: chronic_conditions
+      tags: cms_chronic_conditions
+      materialized: table
     description: >
       This model pivots conditions on the patient level (i.e. one record per 
       patient) with flags for each chronic condition.
@@ -242,13 +245,16 @@ models:
         - name: viral_hepatitis_general
           description: chronic condition flag 1 or 0
 
-  - name: chronic_conditions__chronic_conditions_unioned
+  - name: cms_chronic_conditions__chronic_conditions_unioned
     config:
-      database: "{{ var('chronic_conditions_database',var('tuva_database','tuva')) }}"
+      database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
       schema: |
-        {%- if var('chronic_conditions_schema',None) != None -%}{{var('chronic_conditions_schema')}}{%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions{% else %}chronic_conditions{%- endif -%}
+        {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
+        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_cms_chronic_conditions
+        {% else %}cms_chronic_conditions{%- endif -%}
       alias: chronic_conditions_unioned
-      tags: chronic_conditions
+      tags: cms_chronic_conditions
+      materialized: table
     description: >
       This model unions condition flags from the 3 upstream stage models that
       calculate them.
@@ -291,13 +297,16 @@ models:
 
 ##### Stage
 
-  - name: chronic_conditions__stg_chronic_condition_all
+  - name: cms_chronic_conditions__stg_chronic_condition_all
     config:
-      database: "{{ var('chronic_conditions_database',var('tuva_database','tuva')) }}"
+      database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
       schema: |
-        {%- if var('chronic_conditions_schema',None) != None -%}{{var('chronic_conditions_schema')}}{%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions{% else %}chronic_conditions{%- endif -%}
+        {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
+        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_cms_chronic_conditions
+        {% else %}cms_chronic_conditions{%- endif -%}
       alias: stg_chronic_condition_all
-      tags: chronic_conditions
+      tags: cms_chronic_conditions
+      materialized: table
     description: >
       This model contains logic for all chronic conditions where 
       additional_logic is not 'None'. This model includes standard exclusions
@@ -336,13 +345,16 @@ models:
           description: >
             Indicates the name of the source dataset (e.g. Medicare Claims).
 
-  - name: chronic_conditions__stg_chronic_condition_hiv_aids
+  - name: cms_chronic_conditions__stg_chronic_condition_hiv_aids
     config:
-      database: "{{ var('chronic_conditions_database',var('tuva_database','tuva')) }}"
+      database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
       schema: |
-        {%- if var('chronic_conditions_schema',None) != None -%}{{var('chronic_conditions_schema')}}{%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions{% else %}chronic_conditions{%- endif -%}
+        {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
+        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_cms_chronic_conditions
+        {% else %}cms_chronic_conditions{%- endif -%}
       alias: stg_chronic_condition_hiv_aids
-      tags: chronic_conditions
+      tags: cms_chronic_conditions
+      materialized: table
     description: >
       This model contains logic for the chronic condition Human
       Immunodeficiency Virus and/or Acquired Immunodeficiency Syndrome
@@ -382,13 +394,16 @@ models:
           description: >
             Indicates the name of the source dataset (e.g. Medicare Claims).
 
-  - name: chronic_conditions__stg_chronic_condition_oud
+  - name: cms_chronic_conditions__stg_chronic_condition_oud
     config:
-      database: "{{ var('chronic_conditions_database',var('tuva_database','tuva')) }}"
+      database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
       schema: |
-        {%- if var('chronic_conditions_schema',None) != None -%}{{var('chronic_conditions_schema')}}{%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions{% else %}chronic_conditions{%- endif -%}
+        {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
+        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_cms_chronic_conditions
+        {% else %}cms_chronic_conditions{%- endif -%}
       alias: stg_chronic_condition_oud
-      tags: chronic_conditions
+      tags: cms_chronic_conditions
+      materialized: table
     description: >
       This model contains logic for the chronic condition Opioid Use Disorder 
       (OUD). This model maps ICD-10-CM diagnosis codes, ICD-10-PCS procedure

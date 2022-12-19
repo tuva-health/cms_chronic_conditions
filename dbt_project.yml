@@ -1,27 +1,27 @@
-name: 'chronic_conditions'
-version: '0.1.2'
+name: 'cms_chronic_conditions'
+version: '0.1.3'
 config-version: 2
 profile: 'default'
 
 
 vars:
     prescription: |
-        {% if var('chronic_conditions_prescription_override',none) is not none %}{{var('chronic_conditions_prescription_override')}}
+        {% if var('cms_chronic_conditions_prescription_override',none) is not none %}{{var('cms_chronic_conditions_prescription_override')}}
         {%- elif var('core_prescription_override',none) is not none %}{{var('core_prescription_override')}}
         {%- else %}{{ref('claims_preprocessing__prescription')}}
         {% endif %}
     encounter: |
-        {% if var('chronic_conditions_encounter_override',none) is not none %}{{var('chronic_conditions_encounter_override')}}
+        {% if var('cms_chronic_conditions_encounter_override',none) is not none %}{{var('cms_chronic_conditions_encounter_override')}}
         {%- elif var('core_encounter_override',none) is not none %}{{var('core_encounter_override')}}
         {%- else %}{{ref('claims_preprocessing__encounter')}}
         {% endif %}
     condition: |
-        {% if var('chronic_conditions_condition_override',none) is not none %}{{var('chronic_conditions_condition_override')}}
+        {% if var('cms_chronic_conditions_condition_override',none) is not none %}{{var('cms_chronic_conditions_condition_override')}}
         {%- elif var('core_condition_override',none) is not none %}{{var('core_condition_override')}}
         {%- else %}{{ref('claims_preprocessing__condition')}}
         {% endif %}
     procedure: |
-        {% if var('chronic_conditions_condition_override',none) is not none %}{{var('chronic_conditions_condition_override')}}
+        {% if var('cms_chronic_conditions_condition_override',none) is not none %}{{var('cms_chronic_conditions_condition_override')}}
         {%- elif var('core_condition_override',none) is not none %}{{var('core_condition_override')}}
         {%- else %}{{ref('claims_preprocessing__condition')}}
         {% endif %}  
@@ -40,6 +40,4 @@ clean-targets:
     - "target"
     - "dbt_modules"
 
-models:
-  chronic_conditions:
-    +materialized: table
+
