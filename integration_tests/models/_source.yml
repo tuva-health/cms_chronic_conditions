@@ -2,8 +2,8 @@ version: 2
 
 sources:
   - name: core
-    database: "{{ var('chronic_conditions_input_database','tuva') }}"
-    schema: "{{ var('chronic_conditions_input_schema','core') }}"
+    database: "{{ var('cms_chronic_conditions_input_database','tuva') }}"
+    schema: "{{ var('cms_chronic_conditions_input_schema','core') }}"
     tables:
       - name: condition
         description: > 
