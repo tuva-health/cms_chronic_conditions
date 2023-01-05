@@ -5,12 +5,12 @@ with conditions_unioned as (
     select *
     from {{ ref('cms_chronic_conditions__stg_chronic_condition_all') }}
 
-    union
+    union distinct
 
     select *
     from {{ ref('cms_chronic_conditions__stg_chronic_condition_hiv_aids') }}
 
-    union
+    union distinct
 
     select *
     from {{ ref('cms_chronic_conditions__stg_chronic_condition_oud') }}

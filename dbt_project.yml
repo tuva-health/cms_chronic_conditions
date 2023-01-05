@@ -5,26 +5,26 @@ profile: 'default'
 
 
 vars:
-    prescription: |
+    prescription: >
         {% if var('cms_chronic_conditions_prescription_override',none) is not none %}{{var('cms_chronic_conditions_prescription_override')}}
         {%- elif var('core_prescription_override',none) is not none %}{{var('core_prescription_override')}}
         {%- else %}{{ref('claims_preprocessing__prescription')}}
-        {% endif %}
-    encounter: |
+        {%- endif %}
+    encounter: >
         {% if var('cms_chronic_conditions_encounter_override',none) is not none %}{{var('cms_chronic_conditions_encounter_override')}}
         {%- elif var('core_encounter_override',none) is not none %}{{var('core_encounter_override')}}
         {%- else %}{{ref('claims_preprocessing__encounter')}}
-        {% endif %}
-    condition: |
+        {%- endif %}
+    condition: >
         {% if var('cms_chronic_conditions_condition_override',none) is not none %}{{var('cms_chronic_conditions_condition_override')}}
         {%- elif var('core_condition_override',none) is not none %}{{var('core_condition_override')}}
         {%- else %}{{ref('claims_preprocessing__condition')}}
-        {% endif %}
-    procedure: |
+        {%- endif %}
+    procedure: >
         {% if var('cms_chronic_conditions_condition_override',none) is not none %}{{var('cms_chronic_conditions_condition_override')}}
         {%- elif var('core_condition_override',none) is not none %}{{var('core_condition_override')}}
         {%- else %}{{ref('claims_preprocessing__condition')}}
-        {% endif %}  
+        {%- endif %}  
   
 
 

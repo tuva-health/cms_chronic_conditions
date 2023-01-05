@@ -76,12 +76,12 @@ patient_medications as (
     {% else %}
 
     select
-          null::varchar as encounter_id,
-          null::varchar as patient_id
-        , null::date as encounter_start_date
-        , null::varchar as ndc_code
-        , null::varchar as data_source
-    where false
+          cast(null as {{ dbt.type_string() }} ) as encounter_id
+        , cast(null as {{ dbt.type_string() }} ) as patient_id
+        , cast(null as date ) as encounter_start_date
+        , cast(null as {{ dbt.type_string() }} ) as ndc_code
+        , cast(null as {{ dbt.type_string() }} ) as data_source
+    limit 0
 
     {% endif %}
 
@@ -196,24 +196,24 @@ exclusions_medication as (
 inclusions_unioned as (
 
     select * from inclusions_diagnosis
-    union
+    union distinct
     select * from inclusions_procedure
-    union
+    union distinct
     select * from inclusions_medication
 
 )
 
 select distinct
-      cast(inclusions_unioned.patient_id as varchar(255)) as patient_id
-    , cast(inclusions_unioned.encounter_id as varchar(255)) as encounter_id
+      cast(inclusions_unioned.patient_id as {{ dbt.type_string() }}) as patient_id
+    , cast(inclusions_unioned.encounter_id as {{ dbt.type_string() }}) as encounter_id
     , cast(inclusions_unioned.encounter_start_date as date)
       as encounter_start_date
-    , cast(inclusions_unioned.chronic_condition_type as varchar(255))
+    , cast(inclusions_unioned.chronic_condition_type as {{ dbt.type_string() }})
       as chronic_condition_type
-    , cast(inclusions_unioned.condition_category as varchar(255))
+    , cast(inclusions_unioned.condition_category as {{ dbt.type_string() }})
       as condition_category
-    , cast(inclusions_unioned.condition as varchar(255)) as condition
-    , cast(inclusions_unioned.data_source as varchar(255)) as data_source
+    , cast(inclusions_unioned.condition as {{ dbt.type_string() }}) as condition
+    , cast(inclusions_unioned.data_source as {{ dbt.type_string() }}) as data_source
 from inclusions_unioned
      left join exclusions_medication
          on inclusions_unioned.patient_id = exclusions_medication.patient_id
