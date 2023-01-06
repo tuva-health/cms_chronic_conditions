@@ -27,7 +27,7 @@ conditions as (
     patient_id
     , {{ dbt_utils.pivot(
           column='condition_column_name'
-        , values=dbt_utils.get_column_values(ref ('terminology__cms_chronic_conditions'), 'condition_column_name')
+        , values=dbt_utils.get_column_values(ref ('terminology__cms_chronic_conditions'), 'condition_column_name', order_by= 'condition_column_name')
         , agg='max'
         , then_value= 1
         , else_value= 0

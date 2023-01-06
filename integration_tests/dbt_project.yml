@@ -2,31 +2,30 @@ name: 'integration_tests'
 version: '1.0.0'
 config-version: 2
 
-profile: 'default_redshift'
+profile: 'default'
 
 
 
-vars:
+#vars:
 ## List of optional vars
-  tuva_database: dev_forrest
+#  tuva_database: dev_user
 
-#  tuva_schema_prefix: forrest
-  terminology_schema: terminology
-  cms_chronic_conditions_schema: cms_chronic_conditions_test
+#  tuva_schema_prefix: test
+#  terminology_schema: terminology
+#  cms_chronic_conditions_schema: cms_chronic_conditions_test
 # <package_name>_database: dev_user
 # <package_name>_schema: test
-
-  cms_chronic_conditions_input_database: dev_forrest
-  cms_chronic_conditions_input_schema: core
+#
+#  cms_chronic_conditions_input_database: dev_forrest
+#  cms_chronic_conditions_input_schema: core
 
 ## The two vars below can reference a ref or source
 # core_<table_name>_override: "{{ref('<table_name>')}}"
 # <package_name>_<table_name>_override: "{{source('<source>','table_name')}}"
 
 ## Execute the enabled tests in succession
-  tuva_packages_enabled: false
-  cms_chronic_conditions_enabled: true
-# <package_name>_enabled: true
+#  tuva_packages_enabled: false
+#  cms_chronic_conditions_enabled: true
 
 ## Only needed if package uses Terminology package
 # terminology_enabled: false
