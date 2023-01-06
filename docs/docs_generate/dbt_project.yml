@@ -1,4 +1,4 @@
-name: 'chronic_conditions_input'
+name: 'cms_chronic_conditions_input'
 version: '1.0.0'
 config-version: 2
 
@@ -16,7 +16,7 @@ vars:
 
 dispatch:
   - macro_namespace: dbt
-    search_order: [ 'chronic_conditions', 'dbt']
+    search_order: [ 'cms_chronic_conditions', 'dbt']
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -32,5 +32,5 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  chronic_conditions_input:
+  cms_chronic_conditions_input:
     +materialized: view

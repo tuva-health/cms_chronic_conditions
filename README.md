@@ -42,7 +42,7 @@ To import the CMS Chronic Conditions package, you need to include the following 
 ```yaml
 packages:
   - package: tuva-health/cms_chronic_conditions
-    version: 0.1.3
+    version: 0.1.6
 ```
 
 To tell the CMS Chronic Conditions package where to find the relevant input tables as well as what database and schema to dump its output into, you must add the following in your `dbt_project.yml:`
