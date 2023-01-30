@@ -1,1 +1,1 @@
-select * from {{source('core','condition')}}
+select * from {{source('core','procedure')}}

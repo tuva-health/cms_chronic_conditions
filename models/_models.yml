@@ -1,14 +1,14 @@
 version: 2
 
 models:
-  - name: cms_chronic_conditions__chronic_conditions_pivoted
+  - name: cms_chronic_conditions__cms_chronic_conditions_wide
     config:
       database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
       schema: |
         {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
-        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_cms_chronic_conditions
-        {% else %}cms_chronic_conditions{%- endif -%}
-      alias: chronic_conditions_pivoted
+        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions
+        {% else %}chronic_conditions{%- endif -%}
+      alias: cms_chronic_conditions_wide
       tags: cms_chronic_conditions
       materialized: table
     description: >
@@ -245,14 +245,14 @@ models:
         - name: viral_hepatitis_general
           description: chronic condition flag 1 or 0
 
-  - name: cms_chronic_conditions__chronic_conditions_unioned
+  - name: cms_chronic_conditions__cms_chronic_conditions_long
     config:
       database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
       schema: |
         {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
-        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_cms_chronic_conditions
-        {% else %}cms_chronic_conditions{%- endif -%}
-      alias: chronic_conditions_unioned
+        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions
+        {% else %}chronic_conditions{%- endif -%}
+      alias: cms_chronic_conditions_long
       tags: cms_chronic_conditions
       materialized: table
     description: >
@@ -297,14 +297,14 @@ models:
 
 ##### Stage
 
-  - name: cms_chronic_conditions__stg_chronic_condition_all
+  - name: cms_chronic_conditions__stg_cms_chronic_condition_all
     config:
       database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
       schema: |
         {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
-        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_cms_chronic_conditions
-        {% else %}cms_chronic_conditions{%- endif -%}
-      alias: stg_chronic_condition_all
+        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions
+        {% else %}chronic_conditions{%- endif -%}
+      alias: stg_cms_chronic_condition_all
       tags: cms_chronic_conditions
       materialized: table
     description: >
@@ -345,14 +345,14 @@ models:
           description: >
             Indicates the name of the source dataset (e.g. Medicare Claims).
 
-  - name: cms_chronic_conditions__stg_chronic_condition_hiv_aids
+  - name: cms_chronic_conditions__stg_cms_chronic_condition_hiv_aids
     config:
       database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
       schema: |
         {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
-        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_cms_chronic_conditions
-        {% else %}cms_chronic_conditions{%- endif -%}
-      alias: stg_chronic_condition_hiv_aids
+        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions
+        {% else %}chronic_conditions{%- endif -%}
+      alias: stg_cms_chronic_condition_hiv_aids
       tags: cms_chronic_conditions
       materialized: table
     description: >
@@ -394,14 +394,14 @@ models:
           description: >
             Indicates the name of the source dataset (e.g. Medicare Claims).
 
-  - name: cms_chronic_conditions__stg_chronic_condition_oud
+  - name: cms_chronic_conditions__stg_cms_chronic_condition_oud
     config:
       database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
       schema: |
         {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
-        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_cms_chronic_conditions
-        {% else %}cms_chronic_conditions{%- endif -%}
-      alias: stg_chronic_condition_oud
+        {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions
+        {% else %}chronic_conditions{%- endif -%}
+      alias: stg_cms_chronic_condition_oud
       tags: cms_chronic_conditions
       materialized: table
     description: >

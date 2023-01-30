@@ -4,7 +4,7 @@
 
 with chronic_conditions as (
 
-    select * from {{ ref('terminology__cms_chronic_conditions') }}
+    select * from {{ ref('cms_chronic_conditions__cms_chronic_conditions_hierarchy') }}
     where condition = '{{ condition_filter }}'
 
 ),

@@ -2,15 +2,21 @@
 
 # CMS Chronic Conditions
 
+## 🔗  Quick Links
+- [Docs](https://tuva-health.github.io/the_tuva_project/#!/overview/cms_chronic_conditions): Learn about the Tuva Project data model
+- [Knowledge Base](https://thetuvaproject.com/docs/intro): Learn about claims data fundamentals and how to do claims data analytics
+<br/><br/>
+
+
 ## 🧰 What does this project do?
 
 The Tuva Project's CMS Chronic Conditions package creates chronic condition flags on your patient population for 75 different chronic conditions. 
 
-For information on data models and to view the entire DAG check out our dbt [Docs](https://tuva-health.github.io/cms_chronic_conditions/#!/overview/terminology).
+For information on data models and to view the entire DAG check out our dbt [Docs](https://tuva-health.github.io/the_tuva_project/#!/overview/cms_chronic_conditions).
 
 ## 🔌 What databases are supported?
 
-This package has been tested on **Snowflake** and **Redshift**.
+This package has been tested on **Snowflake**, **Redshift** and **BigQuery**.
 
 ## 📚 What versions of dbt are supported?
 
@@ -40,7 +46,7 @@ To import the CMS Chronic Conditions package, you need to include the following 
 ```yaml
 packages:
   - package: tuva-health/cms_chronic_conditions
-    version: 0.1.6
+    version: 0.1.7
 ```
 
 To tell the CMS Chronic Conditions package where to find the relevant input tables as well as what database and schema to dump its output into, you must add the following in your `dbt_project.yml:`

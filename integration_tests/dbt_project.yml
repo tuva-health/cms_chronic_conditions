@@ -7,8 +7,10 @@ profile: 'default'
 
 
 #vars:
-## List of optional vars
+### List of optional vars
 #  tuva_database: dev_user
+#  tuva_schema_prefix: uppertest
+
 
 #  tuva_schema_prefix: test
 #  terminology_schema: terminology
@@ -16,7 +18,7 @@ profile: 'default'
 # <package_name>_database: dev_user
 # <package_name>_schema: test
 #
-#  cms_chronic_conditions_input_database: dev_forrest
+#  cms_chronic_conditions_input_database: dev_user
 #  cms_chronic_conditions_input_schema: core
 
 ## The two vars below can reference a ref or source
