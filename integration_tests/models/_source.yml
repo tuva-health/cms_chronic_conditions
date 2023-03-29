@@ -50,7 +50,7 @@ sources:
             description: >
               Indicates the name of the source dataset (e.g. Medicare Claims).
 
-      - name: prescription
+      - name: pharmacy_claim
         description: >
           Info about medication requests, administrations, and prescriptions.
         columns:
@@ -60,13 +60,13 @@ sources:
           - name: patient_id
             description: Unique ID for the patient.
 
-          - name: filled_date
+          - name: dispensing_date
             description: Date the prescription was filled.
 
           - name: paid_date
             description: Date the prescription as paid.
 
-          - name: ndc
+          - name: ndc_code
             description: NDC code associated with the medication.
 
           - name: data_source

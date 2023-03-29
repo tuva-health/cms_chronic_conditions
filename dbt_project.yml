@@ -5,10 +5,10 @@ profile: 'default'
 
 
 vars:
-    prescription: >
-        {% if var('cms_chronic_conditions_prescription_override',none) is not none %}{{var('cms_chronic_conditions_prescription_override')}}
-        {%- elif var('core_prescription_override',none) is not none %}{{var('core_prescription_override')}}
-        {%- else %}{{ref('claims_preprocessing__prescription')}}
+    pharmacy_claim: >
+        {% if var('cms_chronic_conditions_pharmacy_claim_override',none) is not none %}{{var('cms_chronic_conditions_pharmacy_claim_override')}}
+        {%- elif var('core_pharmacy_claim_override',none) is not none %}{{var('core_pharmacy_claim_override')}}
+        {%- else %}{{ref('claims_preprocessing__pharmacy_claim')}}
         {%- endif %}
     encounter: >
         {% if var('cms_chronic_conditions_encounter_override',none) is not none %}{{var('cms_chronic_conditions_encounter_override')}}

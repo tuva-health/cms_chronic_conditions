@@ -1,6 +1,6 @@
 {{ config(enabled = var('cms_chronic_conditions_enabled',var('tuva_packages_enabled',True)) ) }}
 
---depends_on: {{ var('prescription') }}
+--depends_on: {{ var('pharmacy_claim') }}
 
 {%- set condition_filter = 'Opioid Use Disorder (OUD)' -%}
 
@@ -25,7 +25,7 @@
 {%- set source_relation = adapter.get_relation(
       database=var("input_database","tuva"),
       schema=var("input_schema","core"),
-      identifier="prescription"
+      identifier="pharmacy_claim"
     ) -%}
 
 {%- set table_exists=source_relation is not none %}
@@ -71,7 +71,7 @@ patient_medications as (
         , cast(paid_date as date) as encounter_start_date
         , replace(ndc_code,'.','') as ndc_code
         , data_source
-    from {{ var('prescription') }}
+    from {{ var('pharmacy_claim') }}
 
     {% else %}
 

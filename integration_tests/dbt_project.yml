@@ -6,32 +6,21 @@ profile: 'default'
 
 
 
-#vars:
-### List of optional vars
-#  tuva_database: dev_user
-#  tuva_schema_prefix: uppertest
+vars:
 
+# # Set the input database and schema:
+#   cms_chronic_conditions_input_database: 
+#   cms_chronic_conditions_input_schema: 
 
-#  tuva_schema_prefix: test
-#  terminology_schema: terminology
-#  cms_chronic_conditions_schema: cms_chronic_conditions_test
-# <package_name>_database: dev_user
-# <package_name>_schema: test
-#
-#  cms_chronic_conditions_input_database: dev_user
-#  cms_chronic_conditions_input_schema: core
+# # Set the output database and schema:
+#   cms_chronic_conditions_database: 
+#   cms_chronic_conditions_schema: 
+#   terminology_database: 
+#   terminology_schema: 
 
-## The two vars below can reference a ref or source
-# core_<table_name>_override: "{{ref('<table_name>')}}"
-# <package_name>_<table_name>_override: "{{source('<source>','table_name')}}"
-
-## Execute the enabled tests in succession
-#  tuva_packages_enabled: false
-#  cms_chronic_conditions_enabled: true
-
-## Only needed if package uses Terminology package
-# terminology_enabled: false
-
+# Say what packages are enabled:
+  tuva_packages_enabled: false
+  cms_chronic_conditions_enabled: true
 
 
 
