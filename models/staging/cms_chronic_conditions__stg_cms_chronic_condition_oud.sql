@@ -1,8 +1,8 @@
 {{ config(enabled = var('cms_chronic_conditions_enabled',var('tuva_packages_enabled',True)) ) }}
 
---depends_on: {{ var('pharmacy_claim') }}
+-- depends_on: {{ var('pharmacy_claim') }}
 
-{%- set condition_filter = 'Opioid Use Disorder (OUD)' -%}
+{% set condition_filter = 'Opioid Use Disorder (OUD)' -%}
 
 {%- set naltrexone_ndcs = (
     '00056001122', '00056001130', '00056001170', '00056007950', '00056008050',
@@ -17,19 +17,6 @@
     )
 -%}
 
-{#
-    Not all data sources have medications the below code block will set the
-    variable table_exists using the get_relation macro
-#}
-
-{%- set source_relation = adapter.get_relation(
-      database=var("input_database","tuva"),
-      schema=var("input_schema","core"),
-      identifier="pharmacy_claim"
-    ) -%}
-
-{%- set table_exists=source_relation is not none %}
-
 with chronic_conditions as (
 
     select * from {{ ref('cms_chronic_conditions__cms_chronic_conditions_hierarchy') }}
@@ -40,15 +27,15 @@ with chronic_conditions as (
 patient_encounters as (
 
     select
-          encounter.patient_id
+          encounter.person_id
         , encounter.encounter_id
         , encounter.encounter_start_date
-        , encounter.ms_drg_code
+        , encounter.drg_code as ms_drg_code
         , encounter.data_source
-        , replace(condition.code,'.','') as condition_code
-        , condition.code_type as condition_code_type
-        , replace(procedure.code,'.','') as procedure_code
-        , procedure.code_type as procedure_code_type
+        , replace(condition.normalized_code,'.','') as condition_code
+        , condition.code_system as condition_code_type
+        , replace(procedure.normalized_code,'.','') as procedure_code
+        , procedure.code_system as procedure_code_type
     from {{ var('encounter') }} as encounter
          left join {{ var('condition') }} as condition
              on encounter.encounter_id = condition.encounter_id
@@ -57,40 +44,22 @@ patient_encounters as (
 
 ),
 
-/*
-    This code block creates an empty medication CTE if one is not found
-    using the table_exists variable, otherwise it uses the actual table
-*/
 patient_medications as (
 
-    {% if table_exists or project_name == 'data_profiling' %}
-
     select
-        cast(null as varchar)  encounter_id,
-          patient_id
+          cast(null as {{ dbt.type_string() }}) as encounter_id
+        , person_id
         , cast(paid_date as date) as encounter_start_date
         , replace(ndc_code,'.','') as ndc_code
         , data_source
     from {{ var('pharmacy_claim') }}
-
-    {% else %}
-
-    select
-          cast(null as {{ dbt.type_string() }} ) as encounter_id
-        , cast(null as {{ dbt.type_string() }} ) as patient_id
-        , cast(null as date ) as encounter_start_date
-        , cast(null as {{ dbt.type_string() }} ) as ndc_code
-        , cast(null as {{ dbt.type_string() }} ) as data_source
-    limit 0
-
-    {% endif %}
 
 ),
 
 inclusions_diagnosis as (
 
     select
-          patient_encounters.patient_id
+          patient_encounters.person_id
         , patient_encounters.encounter_id
         , patient_encounters.encounter_start_date
         , patient_encounters.data_source
@@ -108,7 +77,7 @@ inclusions_diagnosis as (
 inclusions_procedure as (
 
     select
-          patient_encounters.patient_id
+          patient_encounters.person_id
         , patient_encounters.encounter_id
         , patient_encounters.encounter_start_date
         , patient_encounters.data_source
@@ -132,7 +101,7 @@ inclusions_procedure as (
 */
 inclusions_medication as (
     select
-          patient_medications.patient_id
+          patient_medications.person_id
         , patient_medications.encounter_id
         , patient_medications.encounter_start_date
         , patient_medications.data_source
@@ -157,7 +126,7 @@ inclusions_medication as (
 */
 exclusions_other_chronic_conditions as (
 
-    select distinct patient_id
+    select distinct person_id
     from {{ ref('cms_chronic_conditions__stg_cms_chronic_condition_all') }}
     where condition in (
           'Alcohol Use Disorders'
@@ -176,20 +145,20 @@ exclusions_other_chronic_conditions as (
 */
 exclusions_medication as (
     select distinct
-          patient_medications.patient_id
+          patient_medications.person_id
     from patient_medications
          inner join chronic_conditions
              on patient_medications.ndc_code = chronic_conditions.code
          inner join exclusions_other_chronic_conditions
-             on patient_medications.patient_id =
-                exclusions_other_chronic_conditions.patient_id
+             on patient_medications.person_id =
+                exclusions_other_chronic_conditions.person_id
          left join inclusions_diagnosis
-             on patient_medications.patient_id =
-                inclusions_diagnosis.patient_id
+             on patient_medications.person_id =
+                inclusions_diagnosis.person_id
     where chronic_conditions.inclusion_type = 'Include'
     and chronic_conditions.code_system = 'NDC'
     and chronic_conditions.code in {{ naltrexone_ndcs }}
-    and inclusions_diagnosis.patient_id is null
+    and inclusions_diagnosis.person_id is null
 
 ),
 
@@ -204,7 +173,7 @@ inclusions_unioned as (
 )
 
 select distinct
-      cast(inclusions_unioned.patient_id as {{ dbt.type_string() }}) as patient_id
+      cast(inclusions_unioned.person_id as {{ dbt.type_string() }}) as person_id
     , cast(inclusions_unioned.encounter_id as {{ dbt.type_string() }}) as encounter_id
     , cast(inclusions_unioned.encounter_start_date as date)
       as encounter_start_date
@@ -216,5 +185,5 @@ select distinct
     , cast(inclusions_unioned.data_source as {{ dbt.type_string() }}) as data_source
 from inclusions_unioned
      left join exclusions_medication
-         on inclusions_unioned.patient_id = exclusions_medication.patient_id
-where exclusions_medication.patient_id is null
+         on inclusions_unioned.person_id = exclusions_medication.person_id
+where exclusions_medication.person_id is null

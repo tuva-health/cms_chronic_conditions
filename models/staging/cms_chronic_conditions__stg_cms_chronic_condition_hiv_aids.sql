@@ -12,13 +12,13 @@ with chronic_conditions as (
 patient_encounters as (
 
     select
-          encounter.patient_id
+          encounter.person_id
         , encounter.encounter_id
         , encounter.encounter_start_date
-        , encounter.ms_drg_code
+        , encounter.drg_code as ms_drg_code
         , encounter.data_source
-        , replace(condition.code,'.','') as condition_code
-        , condition.code_type as condition_code_type
+        , replace(condition.normalized_code,'.','') as condition_code
+        , condition.code_system as condition_code_type
     from {{ var('encounter') }} as encounter
          left join {{ var('condition') }} as condition
              on encounter.encounter_id = condition.encounter_id
@@ -35,7 +35,7 @@ patient_encounters as (
 inclusions_diagnosis as (
 
     select
-          patient_encounters.patient_id
+          patient_encounters.person_id
         , patient_encounters.encounter_id
         , patient_encounters.encounter_start_date
         , patient_encounters.data_source
@@ -54,7 +54,7 @@ inclusions_diagnosis as (
 inclusions_ms_drg as (
 
     select
-          patient_encounters.patient_id
+          patient_encounters.person_id
         , patient_encounters.encounter_id
         , patient_encounters.encounter_start_date
         , patient_encounters.data_source
@@ -79,7 +79,7 @@ inclusions_ms_drg as (
 exception_diagnosis as (
 
     select
-          patient_encounters.patient_id
+          patient_encounters.person_id
         , patient_encounters.encounter_id
         , patient_encounters.encounter_start_date
         , patient_encounters.data_source
@@ -90,7 +90,7 @@ exception_diagnosis as (
          inner join chronic_conditions
              on patient_encounters.condition_code = chronic_conditions.code
          inner join inclusions_diagnosis
-             on patient_encounters.patient_id = inclusions_diagnosis.patient_id
+             on patient_encounters.person_id = inclusions_diagnosis.person_id
     where chronic_conditions.inclusion_type = 'Include'
     and chronic_conditions.code_system = 'ICD-10-CM'
     and chronic_conditions.code = 'R75'
@@ -108,7 +108,7 @@ inclusions_unioned as (
 )
 
 select distinct
-      cast(inclusions_unioned.patient_id as {{ dbt.type_string() }}) as patient_id
+      cast(inclusions_unioned.person_id as {{ dbt.type_string() }}) as person_id
     , cast(inclusions_unioned.encounter_id as {{ dbt.type_string() }}) as encounter_id
     , cast(inclusions_unioned.encounter_start_date as date)
       as encounter_start_date

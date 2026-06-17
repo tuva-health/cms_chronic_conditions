@@ -15,7 +15,7 @@ models:
       This model pivots conditions on the patient level (i.e. one record per 
       patient) with flags for each chronic condition.
     columns:
-        - name: patient_id
+        - name: person_id
           description: Unique ID for the patient.
           tests:
             - unique
@@ -335,10 +335,10 @@ models:
       calculate them.
     tests:
       - unique:
-          column_name: "(patient_id || encounter_id || encounter_start_date || condition)"
+          column_name: "(person_id || encounter_id || encounter_start_date || condition)"
 
     columns:
-        - name: patient_id
+        - name: person_id
           description: Unique ID for the patient.
           tests:
             - not_null
@@ -396,7 +396,7 @@ models:
       HCPCS codes, and MS DRG codes to chronic conditions.
 
     columns:
-        - name: patient_id
+        - name: person_id
           description: Unique ID for the patient.
           tests:
             - not_null
@@ -444,7 +444,7 @@ models:
       codes to the chronic condition.
 
     columns:
-        - name: patient_id
+        - name: person_id
           description: Unique ID for the patient.
           tests:
             - not_null
@@ -470,7 +470,8 @@ models:
           tests:
             - not_null
             - accepted_values:
-                values: [ 'Human Immunodeficiency Virus and/or Acquired Immunodeficiency Syndrome (HIV/AIDS)' ] #noqa
+                arguments:
+                  values: [ 'Human Immunodeficiency Virus and/or Acquired Immunodeficiency Syndrome (HIV/AIDS)' ] #noqa
 
         - name: data_source
           description: >
@@ -492,7 +493,7 @@ models:
       codes, HCPCS codes, and NDC codes to the chronic condition.
 
     columns:
-        - name: patient_id
+        - name: person_id
           description: Unique ID for the patient.
           tests:
             - not_null
@@ -518,7 +519,8 @@ models:
           tests:
             - not_null
             - accepted_values:
-                values: [ 'Opioid Use Disorder (OUD)' ]
+                arguments:
+                  values: [ 'Opioid Use Disorder (OUD)' ]
 
         - name: data_source
           description: >

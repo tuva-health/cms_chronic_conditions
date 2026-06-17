@@ -18,7 +18,7 @@ with conditions_unioned as (
 )
 
 select
-      patient_id
+      person_id
     , encounter_id
     , encounter_start_date
     , chronic_condition_type

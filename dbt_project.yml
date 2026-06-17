@@ -8,27 +8,27 @@ vars:
     pharmacy_claim: >
         {% if var('cms_chronic_conditions_pharmacy_claim_override',none) is not none %}{{var('cms_chronic_conditions_pharmacy_claim_override')}}
         {%- elif var('core_pharmacy_claim_override',none) is not none %}{{var('core_pharmacy_claim_override')}}
-        {%- else %}{{ref('claims_preprocessing__pharmacy_claim')}}
+        {%- else %}{{ref('core__pharmacy_claim')}}
         {%- endif %}
     encounter: >
         {% if var('cms_chronic_conditions_encounter_override',none) is not none %}{{var('cms_chronic_conditions_encounter_override')}}
         {%- elif var('core_encounter_override',none) is not none %}{{var('core_encounter_override')}}
-        {%- else %}{{ref('claims_preprocessing__encounter')}}
+        {%- else %}{{ref('core__encounter')}}
         {%- endif %}
     condition: >
         {% if var('cms_chronic_conditions_condition_override',none) is not none %}{{var('cms_chronic_conditions_condition_override')}}
         {%- elif var('core_condition_override',none) is not none %}{{var('core_condition_override')}}
-        {%- else %}{{ref('claims_preprocessing__condition')}}
+        {%- else %}{{ref('core__condition')}}
         {%- endif %}
     procedure: >
         {% if var('cms_chronic_conditions_procedure_override',none) is not none %}{{var('cms_chronic_conditions_procedure_override')}}
         {%- elif var('core_procedure_override',none) is not none %}{{var('core_procedure_override')}}
-        {%- else %}{{ref('claims_preprocessing__procedure')}}
+        {%- else %}{{ref('core__procedure')}}
         {%- endif %}
     patient: >
         {% if var('cms_chronic_conditions_patient_override',none) is not none %}{{var('cms_chronic_conditions_patient_override')}}
         {%- elif var('core_patient_override',none) is not none %}{{var('core_patient_override')}}
-        {%- else %}{{ref('claims_preprocessing__patient')}}
+        {%- else %}{{ref('core__patient')}}
         {%- endif %}  
   
   
@@ -45,5 +45,4 @@ target-path: "target"
 clean-targets:
     - "target"
     - "dbt_modules"
-
 
