@@ -3,7 +3,7 @@
 # CMS Chronic Conditions
 
 ## 🔗  Quick Links
-- [Docs](https://tuva-health.github.io/the_tuva_project/#!/overview/cms_chronic_conditions): Learn about the Tuva Project data model
+- [Docs](https://thetuvaproject.com/data-marts/chronic-conditions): Learn about the Tuva Project data model
 - [Knowledge Base](https://thetuvaproject.com/docs/intro): Learn about claims data fundamentals and how to do claims data analytics
 <br/><br/>
 
@@ -21,7 +21,7 @@ This package requires you to have dbt installed and a functional dbt project run
 
 ## ✅ How do I use this dbt package?
 
-To run this package, please refer to the instructions in the Tuva Project [README](https://github.com/tuva-health/the_tuva_project#readme).
+To run this package, please refer to the instructions in the Tuva Project [README](https://github.com/tuva-health/tuva-core#readme).
 
 ## 🙋🏻‍♀️ ****How is this package maintained and how do I contribute?****
 
