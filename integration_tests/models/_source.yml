@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: core
-    database: "{{ var('cms_chronic_conditions_input_database','tuva') }}"
+    database: "{{ var('cms_chronic_conditions_input_database', target.database) }}"
     schema: "{{ var('cms_chronic_conditions_input_schema','core') }}"
     tables:
       - name: condition

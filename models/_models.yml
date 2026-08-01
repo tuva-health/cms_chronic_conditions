@@ -3,7 +3,7 @@ version: 2
 models:
   - name: cms_chronic_conditions__cms_chronic_conditions_wide
     config:
-      database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
+      database: "{{ var('cms_chronic_conditions_database', var('tuva_database', target.database)) }}"
       schema: |
         {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
         {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions
@@ -322,7 +322,7 @@ models:
 
   - name: cms_chronic_conditions__cms_chronic_conditions_long
     config:
-      database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
+      database: "{{ var('cms_chronic_conditions_database', var('tuva_database', target.database)) }}"
       schema: |
         {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
         {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions
@@ -384,7 +384,7 @@ models:
 
   - name: cms_chronic_conditions__stg_cms_chronic_condition_all
     config:
-      database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
+      database: "{{ var('cms_chronic_conditions_database', var('tuva_database', target.database)) }}"
       schema: |
         {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
         {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions
@@ -432,7 +432,7 @@ models:
 
   - name: cms_chronic_conditions__stg_cms_chronic_condition_hiv_aids
     config:
-      database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
+      database: "{{ var('cms_chronic_conditions_database', var('tuva_database', target.database)) }}"
       schema: |
         {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
         {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions
@@ -482,7 +482,7 @@ models:
 
   - name: cms_chronic_conditions__stg_cms_chronic_condition_oud
     config:
-      database: "{{ var('cms_chronic_conditions_database',var('tuva_database','tuva')) }}"
+      database: "{{ var('cms_chronic_conditions_database', var('tuva_database', target.database)) }}"
       schema: |
         {%- if var('cms_chronic_conditions_schema',None) != None -%}{{var('cms_chronic_conditions_schema')}}
         {%- elif var('tuva_schema_prefix',None) != None -%}{{var('tuva_schema_prefix')}}_chronic_conditions
