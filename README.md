@@ -1,4 +1,4 @@
-[![Apache License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![dbt logo and version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.2.x&color=orange)
+[![Apache License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![dbt logo and version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.10%2B&color=orange)
 
 # CMS Chronic Conditions
 
@@ -17,11 +17,24 @@ This package has been tested on **Snowflake**, **Redshift** and **BigQuery**.
 
 ## 📚 What versions of dbt are supported?
 
-This package requires you to have dbt installed and a functional dbt project running on dbt version `1.3.x`.
+This package requires dbt version `1.10.0` or higher and a functional dbt project.
 
 ## ✅ How do I use this dbt package?
 
 To run this package, please refer to the instructions in the Tuva Project [README](https://github.com/tuva-health/tuva-core#readme).
+
+## Data assets
+
+Released seed contents are stored as an immutable snapshot under
+`s3://tuva-public-resources/cms-chronic-conditions/<package-version>/`.
+The checked-in CSV file defines the dbt loader header, and `data_assets.yml`
+is the publisher inventory. Dataset changes are released with a new package
+version.
+
+On a version-changing push to `main`, or a manual recovery from current
+`main`, release automation verifies the exact, commit-bound, byte-identical
+`_release.json` receipt in S3, GCS, and Azure before creating the
+`v<package-version>` tag and draft GitHub release.
 
 ## 🙋🏻‍♀️ ****How is this package maintained and how do I contribute?****
 

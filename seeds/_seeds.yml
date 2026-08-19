@@ -12,3 +12,16 @@ seeds:
       enabled: "{{ var('cms_chronic_conditions_enabled',var('tuva_packages_enabled',True)) }}"
       alias: cms_chronic_conditions_hierarchy
       tags: cms_chronic_conditions
+      column_types:
+        condition_id: integer
+        condition: &string_type |
+          {%- if target.type in ("bigquery", "databricks") -%} string {%- else -%} varchar(256) {%- endif -%}
+        condition_column_name: *string_type
+        chronic_condition_type: *string_type
+        condition_category: *string_type
+        additional_logic: &description_type |
+          {%- if target.type in ("bigquery", "databricks") -%} string {%- else -%} varchar(1000) {%- endif -%}
+        claims_qualification: *description_type
+        inclusion_type: *string_type
+        code_system: *string_type
+        code: *string_type
