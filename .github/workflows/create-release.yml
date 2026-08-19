@@ -1,0 +1,176 @@
+name: Create Release
+
+# A version change on main starts release creation. workflow_dispatch provides
+# main-only recovery after assets are published for an earlier failed attempt.
+# Both paths require a commit-bound release in all three public stores.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - dbt_project.yml
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  create-draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      PACKAGE_SLUG: cms-chronic-conditions
+    steps:
+      - name: Require main branch
+        run: |
+          if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+            echo "Release recovery must run from the main branch" >&2
+            exit 1
+          fi
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+
+      - name: Check version change
+        id: check_version
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          import subprocess
+          from pathlib import Path
+
+          VERSION_LINE_PATTERN = re.compile(
+              r"^version:\s*(['\"]?)([^\s'\"#]+)\1\s*(?:#.*)?$",
+              re.MULTILINE,
+          )
+          SEMVER_PATTERN = re.compile(
+              r"^[0-9]+\.[0-9]+\.[0-9]+"
+              r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
+              r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
+          )
+
+
+          def project_version(text):
+              matches = VERSION_LINE_PATTERN.findall(text)
+              if len(matches) != 1:
+                  raise SystemExit(
+                      f"expected exactly one top-level version; found {len(matches)}"
+                  )
+              version = matches[0][1]
+              if not SEMVER_PATTERN.fullmatch(version):
+                  raise SystemExit(
+                      f"package version is not valid semantic versioning: {version!r}"
+                  )
+              return version
+
+
+          new_version = project_version(
+              Path("dbt_project.yml").read_text(encoding="utf-8")
+          )
+          before_sha = os.environ.get("BEFORE_SHA", "")
+          if before_sha and set(before_sha) != {"0"}:
+              old_project = subprocess.check_output(
+                  ["git", "show", f"{before_sha}:dbt_project.yml"],
+                  text=True,
+              )
+              old_version = project_version(old_project)
+          else:
+              old_version = None
+
+          print(f"NEW: {new_version}")
+          print(f"OLD: {old_version or '<none>'}")
+
+          changed = old_version != new_version
+          prerelease = "-" in new_version.split("+", 1)[0]
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
+              output.write(f"changed={str(changed).lower()}\n")
+              if changed:
+                  output.write(f"version={new_version}\n")
+                  output.write(f"prerelease={str(prerelease).lower()}\n")
+          PY
+
+      - name: Require release commit to be current main
+        if: steps.check_version.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+
+          git fetch --force origin \
+            "refs/heads/main:refs/remotes/origin/main"
+          main_commit=$(git rev-parse refs/remotes/origin/main)
+          if [[ "${GITHUB_SHA}" != "${main_commit}" ]]; then
+            echo "Release commit ${GITHUB_SHA} is not current main ${main_commit}" >&2
+            exit 1
+          fi
+
+      - name: Verify data asset release receipts
+        if: steps.check_version.outputs.changed == 'true'
+        env:
+          PACKAGE_VERSION: ${{ steps.check_version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          receipt_path="${PACKAGE_SLUG}/${PACKAGE_VERSION}/_release.json"
+          receipt_dir=$(mktemp -d)
+          trap 'rm -rf "${receipt_dir}"' EXIT
+          receipts=(
+            "s3|https://tuva-public-resources.s3.amazonaws.com/${receipt_path}"
+            "gcs|https://storage.googleapis.com/tuva-public-resources/${receipt_path}"
+            "azure|https://tuvapublicresources.blob.core.windows.net/tuva-public-resources/${receipt_path}"
+          )
+
+          for receipt in "${receipts[@]}"; do
+            provider=${receipt%%|*}
+            url=${receipt#*|}
+            curl --fail --silent --show-error --location \
+              --proto '=https' --tlsv1.2 \
+              --connect-timeout 15 --max-time 120 \
+              --retry 3 --retry-all-errors \
+              --output "${receipt_dir}/${provider}.json" "${url}"
+          done
+
+          python3 .github/scripts/verify-data-asset-receipts.py \
+            "${receipt_dir}" data_assets.yml "${PACKAGE_SLUG}" \
+            "${PACKAGE_VERSION}" "${GITHUB_SHA}"
+
+      - name: Create tag
+        if: steps.check_version.outputs.changed == 'true'
+        env:
+          PACKAGE_VERSION: ${{ steps.check_version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          tag="v${PACKAGE_VERSION}"
+          git fetch --force --tags origin \
+            "refs/heads/main:refs/remotes/origin/main"
+          main_commit=$(git rev-parse refs/remotes/origin/main)
+          if [[ "${GITHUB_SHA}" != "${main_commit}" ]]; then
+            echo "Main advanced to ${main_commit}; refusing to create ${tag}" >&2
+            exit 1
+          fi
+          if git show-ref --verify --quiet "refs/tags/${tag}"; then
+            tagged_commit=$(git rev-list -n 1 "${tag}")
+            if [[ "${tagged_commit}" != "${GITHUB_SHA}" ]]; then
+              echo "Tag ${tag} already points to ${tagged_commit}, not ${GITHUB_SHA}" >&2
+              exit 1
+            fi
+            echo "Tag ${tag} already points to this release commit"
+          else
+            git tag "${tag}"
+          fi
+          git push origin "refs/tags/${tag}"
+
+      - name: Create draft release
+        if: steps.check_version.outputs.changed == 'true'
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+        with:
+          tag_name: v${{ steps.check_version.outputs.version }}
+          name: ${{ github.event.repository.name }} v${{ steps.check_version.outputs.version }}
+          draft: true
+          prerelease: ${{ steps.check_version.outputs.prerelease }}
+          generate_release_notes: true
