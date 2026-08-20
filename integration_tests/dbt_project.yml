@@ -4,26 +4,6 @@ config-version: 2
 
 profile: 'default'
 
-
-
-vars:
-
-# # Set the input database and schema:
-#   cms_chronic_conditions_input_database: 
-#   cms_chronic_conditions_input_schema: 
-
-# # Set the output database and schema:
-#   cms_chronic_conditions_database: 
-#   cms_chronic_conditions_schema: 
-#   terminology_database: 
-#   terminology_schema: 
-
-# Say what packages are enabled:
-  tuva_packages_enabled: false
-  cms_chronic_conditions_enabled: true
-
-
-
 dispatch:
   - macro_namespace: dbt
     search_order: [ 'cms_chronic_conditions', 'dbt']
