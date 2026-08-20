@@ -1,5 +1,3 @@
-{{ config(enabled = var('cms_chronic_conditions_enabled',var('tuva_packages_enabled',True)) ) }}
-
 -- depends_on: {{ var('pharmacy_claim') }}
 
 {% set condition_filter = 'Opioid Use Disorder (OUD)' -%}

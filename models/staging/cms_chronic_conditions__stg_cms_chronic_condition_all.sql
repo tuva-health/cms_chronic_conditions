@@ -1,5 +1,3 @@
-{{ config(enabled = var('cms_chronic_conditions_enabled',var('tuva_packages_enabled',True)) ) }}
-
 with chronic_conditions as (
 
     select * from {{ ref('cms_chronic_conditions__cms_chronic_conditions_hierarchy') }}

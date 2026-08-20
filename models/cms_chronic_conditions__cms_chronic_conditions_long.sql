@@ -1,5 +1,3 @@
-{{ config(enabled = var('cms_chronic_conditions_enabled',var('tuva_packages_enabled',True)) ) }}
-
 with conditions_unioned as (
 
     select *
