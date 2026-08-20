@@ -120,7 +120,7 @@ jobs:
           trap 'rm -rf "${receipt_dir}"' EXIT
           receipts=(
             "s3|https://tuva-public-resources.s3.amazonaws.com/${receipt_path}"
-            "gcs|https://storage.googleapis.com/tuva-public-resources/${receipt_path}"
+            "gcs|https://storage.googleapis.com/tuva-public-resources/${receipt_path}?tuva_package_commit=${GITHUB_SHA}"
             "azure|https://tuvapublicresources.blob.core.windows.net/tuva-public-resources/${receipt_path}"
           )
 
