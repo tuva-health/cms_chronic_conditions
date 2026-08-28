@@ -1,7 +1,7 @@
 name: 'cms_chronic_conditions'
 version: '1.0.0'
 config-version: 2
-require-dbt-version: ">=1.10.0"
+require-dbt-version: ">=1.10.5,<3.0.0"
 profile: 'default'
 
 
@@ -49,4 +49,4 @@ clean-targets:
 seeds:
     cms_chronic_conditions:
         cms_chronic_conditions__cms_chronic_conditions_hierarchy:
-            +post-hook: "{{ the_tuva_project.load_package_seed('cms_chronic_conditions', 'cms-chronic-conditions', 'cms_chronic_conditions__cms_chronic_conditions_hierarchy.csv.gz') }}"
+            +post-hook: "{{ the_tuva_project.load_package_seed('cms-chronic-conditions', cms_chronic_conditions.get_cms_chronic_conditions_package_version(), 'cms_chronic_conditions__cms_chronic_conditions_hierarchy.csv.gz') }}"
