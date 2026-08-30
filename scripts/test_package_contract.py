@@ -31,7 +31,7 @@ class PackageContractTest(unittest.TestCase):
         self.assertIsNotNone(macro_version)
         self.assertEqual(project_version.group(1), macro_version.group(1))
         self.assertIn(
-            'require-dbt-version: ">=1.10.5,<3.0.0"', project_text
+            'require-dbt-version: ">=1.10.5,<2.0.0"', project_text
         )
 
     def test_declared_dependencies(self):

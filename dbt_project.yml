@@ -1,7 +1,7 @@
 name: 'cms_chronic_conditions'
 version: '1.0.0'
 config-version: 2
-require-dbt-version: ">=1.10.5,<3.0.0"
+require-dbt-version: ">=1.10.5,<2.0.0"
 profile: 'default'
 
 

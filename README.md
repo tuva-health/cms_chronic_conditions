@@ -1,4 +1,4 @@
-[![Apache License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![dbt logo and version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.10.5%20to%202.x&color=orange)
+[![Apache License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![dbt logo and version](https://img.shields.io/static/v1?logo=dbt&label=dbt-version&message=1.10.5%20to%201.x&color=orange)
 
 # CMS Chronic Conditions
 
@@ -17,7 +17,7 @@ This package has been tested on **Snowflake**, **Redshift** and **BigQuery**.
 
 ## 📚 What versions of dbt are supported?
 
-This package requires dbt versions `>=1.10.5,<3.0.0` and a functional dbt project.
+This package requires dbt versions `>=1.10.5,<2.0.0` and a functional dbt project.
 
 ## ✅ How do I use this dbt package?
 
