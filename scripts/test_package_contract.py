@@ -31,11 +31,21 @@ class PackageContractTest(unittest.TestCase):
         self.assertIsNotNone(macro_version)
         self.assertEqual(project_version.group(1), macro_version.group(1))
         self.assertIn(
-            'require-dbt-version: ">=1.10.5,<3.0.0"', project_text
+            'require-dbt-version: ">=1.10.5,<2.0.0"', project_text
         )
+
+    def test_declared_dependencies(self):
+        packages_text = (ROOT / "packages.yml").read_text()
+
+        # dbt_utils is a compatible-range dependency, not an exact pin, so
+        # consumers can resolve one dbt_utils across the whole Tuva fleet.
+        self.assertIn('version: [">=1.2.0", "<2.0.0"]', packages_text)
+
+        # the_tuva_project (tuva-core) must stay declared: dbt_project.yml calls
+        # the_tuva_project.load_package_seed and the models ref core__* models.
         self.assertIn(
-            "version: 1.2.1",
-            (ROOT / "packages.yml").read_text(),
+            'git: "https://github.com/tuva-health/tuva-core.git"',
+            packages_text,
         )
 
     def test_data_asset_slug_is_stable(self):

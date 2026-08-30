@@ -17,7 +17,7 @@ models:
     columns:
         - name: person_id
           description: Unique ID for the patient.
-          tests:
+          data_tests:
             - unique
             - not_null
         - name: acute_myocardial_infarction
@@ -333,19 +333,19 @@ models:
     description: >
       This model unions condition flags from the 3 upstream stage models that
       calculate them.
-    tests:
+    data_tests:
       - unique:
           column_name: "(person_id || encounter_id || encounter_start_date || condition)"
 
     columns:
         - name: person_id
           description: Unique ID for the patient.
-          tests:
+          data_tests:
             - not_null
 
         - name: encounter_id
           description: Unique ID for each encounter (visit).
-          tests:
+          data_tests:
             - not_null
 
         - name: encounter_start_date
@@ -369,7 +369,7 @@ models:
 
         - name: condition
           description: The name of the chronic condition.
-          tests:
+          data_tests:
             - not_null
           config:
             meta:
@@ -401,12 +401,12 @@ models:
     columns:
         - name: person_id
           description: Unique ID for the patient.
-          tests:
+          data_tests:
             - not_null
 
         - name: encounter_id
           description: Unique ID for each encounter (visit).
-          tests:
+          data_tests:
             - not_null
 
         - name: encounter_start_date
@@ -423,7 +423,7 @@ models:
 
         - name: condition
           description: The name of the chronic condition.
-          tests:
+          data_tests:
             - not_null
 
         - name: data_source
@@ -449,12 +449,12 @@ models:
     columns:
         - name: person_id
           description: Unique ID for the patient.
-          tests:
+          data_tests:
             - not_null
 
         - name: encounter_id
           description: Unique ID for each encounter (visit).
-          tests:
+          data_tests:
             - not_null
 
         - name: encounter_start_date
@@ -470,7 +470,7 @@ models:
 
         - name: condition
           description: The name of the chronic condition.
-          tests:
+          data_tests:
             - not_null
             - accepted_values:
                 arguments:
@@ -498,12 +498,12 @@ models:
     columns:
         - name: person_id
           description: Unique ID for the patient.
-          tests:
+          data_tests:
             - not_null
 
         - name: encounter_id
           description: Unique ID for each encounter (visit).
-          tests:
+          data_tests:
             - not_null
 
         - name: encounter_start_date
@@ -519,7 +519,7 @@ models:
 
         - name: condition
           description: The name of the chronic condition.
-          tests:
+          data_tests:
             - not_null
             - accepted_values:
                 arguments:

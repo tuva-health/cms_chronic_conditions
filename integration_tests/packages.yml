@@ -1,4 +1,6 @@
 packages:
-  - git: "https://github.com/tuva-health/tuva-core.git"
-    revision: main
+  # tuva-core is NOT declared here on purpose. ../packages.yml declares it and
+  # pins the revision; `local: ../` pulls that in transitively. Declaring it
+  # again would give dbt two revisions for one git URL and `dbt deps` fails
+  # with "git dependencies should contain exactly one version".
   - local: ../
