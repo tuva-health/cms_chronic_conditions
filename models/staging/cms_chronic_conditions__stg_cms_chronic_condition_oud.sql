@@ -163,9 +163,17 @@ exclusions_medication as (
 inclusions_unioned as (
 
     select * from inclusions_diagnosis
+    {% if target.type == 'fabric' %}
     union
+    {% else %}
+    union distinct
+    {% endif %}
     select * from inclusions_procedure
+    {% if target.type == 'fabric' %}
     union
+    {% else %}
+    union distinct
+    {% endif %}
     select * from inclusions_medication
 
 )

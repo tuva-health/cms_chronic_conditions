@@ -3,12 +3,20 @@ with conditions_unioned as (
     select *
     from {{ ref('cms_chronic_conditions__stg_cms_chronic_condition_all') }}
 
+    {% if target.type == 'fabric' %}
     union
+    {% else %}
+    union distinct
+    {% endif %}
 
     select *
     from {{ ref('cms_chronic_conditions__stg_cms_chronic_condition_hiv_aids') }}
 
+    {% if target.type == 'fabric' %}
     union
+    {% else %}
+    union distinct
+    {% endif %}
 
     select *
     from {{ ref('cms_chronic_conditions__stg_cms_chronic_condition_oud') }}
