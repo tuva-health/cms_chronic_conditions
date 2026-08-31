@@ -32,9 +32,10 @@ is the publisher inventory. Dataset changes are released with a new package
 version.
 
 On a version-changing push to `main`, or a manual recovery from current
-`main`, release automation verifies the exact, commit-bound, byte-identical
-`_release.json` receipt in S3, GCS, and Azure before creating the
-`v<package-version>` tag and draft GitHub release.
+`main`, release automation verifies that every path in `data_assets.yml`
+exists under the package-version folder in S3, GCS, and Azure before creating
+the `v<package-version>` tag and draft GitHub release. Data assets are plain
+versioned files; there is no separate release receipt or package-commit binding.
 
 ## 🙋🏻‍♀️ ****How is this package maintained and how do I contribute?****
 
