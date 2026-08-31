@@ -6,8 +6,8 @@ packages:
   # the_tuva_project (tuva-core) provides load_package_seed (used by the seed
   # post-hook in dbt_project.yml) and the core__* models that the default
   # pharmacy_claim / encounter / condition / procedure / patient vars ref.
-  # Pinned to a tuva-core main commit so the whole 1.0 fleet resolves the same
-  # tuva-core revision.
+  # Pinned to the reviewed tuva-core architecture commit so the 1.0 fleet
+  # resolves the shared nested-path asset loader.
   # TODO(D2): switch to hub range [">=1.0.0", "<1.1.0"]
   - git: "https://github.com/tuva-health/tuva-core.git"
-    revision: 0d300654aae39d89bc09a3c83201cdceb68d0468
+    revision: d7f1ed0227003cba85914aadf8c2164320e52c77

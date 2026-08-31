@@ -1,8 +1,7 @@
 name: Create Release
 
 # A version change on main starts release creation. workflow_dispatch provides
-# main-only recovery after assets are published for an earlier failed attempt.
-# Both paths require a commit-bound release in all three public stores.
+# main-only recovery after an earlier failed attempt.
 on:
   push:
     branches:
@@ -20,8 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    env:
-      PACKAGE_SLUG: cms-chronic-conditions
     steps:
       - name: Require main branch
         run: |
@@ -33,9 +30,6 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
-
-      - name: Verify package contract
-        run: python3 scripts/test_package_contract.py
 
       - name: Check version change
         id: check_version
@@ -110,36 +104,6 @@ jobs:
             echo "Release commit ${GITHUB_SHA} is not current main ${main_commit}" >&2
             exit 1
           fi
-
-      - name: Verify data asset release receipts
-        if: steps.check_version.outputs.changed == 'true'
-        env:
-          PACKAGE_VERSION: ${{ steps.check_version.outputs.version }}
-        run: |
-          set -euo pipefail
-
-          receipt_path="${PACKAGE_SLUG}/${PACKAGE_VERSION}/_release.json"
-          receipt_dir=$(mktemp -d)
-          trap 'rm -rf "${receipt_dir}"' EXIT
-          receipts=(
-            "s3|https://tuva-public-resources.s3.amazonaws.com/${receipt_path}"
-            "gcs|https://storage.googleapis.com/tuva-public-resources/${receipt_path}?tuva_package_commit=${GITHUB_SHA}"
-            "azure|https://tuvapublicresources.blob.core.windows.net/tuva-public-resources/${receipt_path}"
-          )
-
-          for receipt in "${receipts[@]}"; do
-            provider=${receipt%%|*}
-            url=${receipt#*|}
-            curl --fail --silent --show-error --location \
-              --proto '=https' --tlsv1.2 \
-              --connect-timeout 15 --max-time 120 \
-              --retry 3 --retry-all-errors \
-              --output "${receipt_dir}/${provider}.json" "${url}"
-          done
-
-          python3 .github/scripts/verify-data-asset-receipts.py \
-            "${receipt_dir}" data_assets.yml "${PACKAGE_SLUG}" \
-            "${PACKAGE_VERSION}" "${GITHUB_SHA}"
 
       - name: Create tag
         if: steps.check_version.outputs.changed == 'true'

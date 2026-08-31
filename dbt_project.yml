@@ -6,6 +6,7 @@ profile: 'default'
 
 
 vars:
+    cms_chronic_conditions_data_asset_version: "1.0.0"
     pharmacy_claim: >
         {% if var('cms_chronic_conditions_pharmacy_claim_override',none) is not none %}{{var('cms_chronic_conditions_pharmacy_claim_override')}}
         {%- elif var('core_pharmacy_claim_override',none) is not none %}{{var('core_pharmacy_claim_override')}}
@@ -49,4 +50,4 @@ clean-targets:
 seeds:
     cms_chronic_conditions:
         cms_chronic_conditions__cms_chronic_conditions_hierarchy:
-            +post-hook: "{{ the_tuva_project.load_package_seed('cms-chronic-conditions', cms_chronic_conditions.get_cms_chronic_conditions_package_version(), 'cms_chronic_conditions__cms_chronic_conditions_hierarchy.csv.gz') }}"
+            +post-hook: "{{ the_tuva_project.load_package_seed('data-marts/cms-chronic-conditions', var('cms_chronic_conditions_data_asset_version'), 'cms_chronic_conditions__cms_chronic_conditions_hierarchy.csv.gz') }}"
