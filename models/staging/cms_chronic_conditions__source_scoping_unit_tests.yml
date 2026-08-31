@@ -1,0 +1,209 @@
+version: 2
+
+unit_tests:
+  - name: test_standard_conditions_scope_encounter_joins_and_code_systems
+    description: >
+      Reused encounter identifiers must not copy diagnoses across sources, and
+      a matching code from the wrong code system must not qualify.
+    model: cms_chronic_conditions__stg_cms_chronic_condition_all
+    given:
+      - input: ref('the_tuva_project', 'core__encounter')
+        format: sql
+        rows: |
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          select
+              'person-1' as person_id
+            , 'shared-encounter' as encounter_id
+            , cast('2026-01-01' as date) as encounter_start_date
+            , cast(null as {{ string_type }}) as drg_code
+            , cast(null as {{ string_type }}) as drg_code_type
+            , 'source-a' as data_source
+          union all
+          select
+              'person-1', 'shared-encounter', cast('2026-02-01' as date)
+            , cast(null as {{ string_type }}), cast(null as {{ string_type }})
+            , 'source-b'
+      - input: ref('the_tuva_project', 'core__condition')
+        format: sql
+        rows: |
+          select
+              'shared-encounter' as encounter_id
+            , 'I10' as normalized_code
+            , 'ICD-10-CM' as code_system
+            , 'source-a' as data_source
+          union all
+          select 'shared-encounter', 'I10', 'ICD-10-PCS', 'source-b'
+      - input: ref('the_tuva_project', 'core__procedure')
+        format: sql
+        rows: |
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          select
+              cast(null as {{ string_type }}) as encounter_id
+            , cast(null as {{ string_type }}) as normalized_code
+            , cast(null as {{ string_type }}) as code_system
+            , cast(null as {{ string_type }}) as data_source
+          where 1 = 0
+      - input: ref('cms_chronic_conditions__cms_chronic_conditions_hierarchy')
+        format: sql
+        rows: |
+          select
+              'Chronic' as chronic_condition_type
+            , 'Cardiovascular' as condition_category
+            , 'Hypertension' as condition
+            , 'None' as additional_logic
+            , 'Include' as inclusion_type
+            , 'ICD-10-CM' as code_system
+            , 'I10' as code
+    expect:
+      rows:
+        - person_id: person-1
+          encounter_id: shared-encounter
+          encounter_start_date: '2026-01-01'
+          chronic_condition_type: Chronic
+          condition_category: Cardiovascular
+          condition: Hypertension
+          data_source: source-a
+
+  - name: test_hiv_r75_requires_another_encounter_in_the_same_source
+    description: >
+      R75 screening evidence must not be confirmed by another diagnosis on the
+      same encounter or by a qualifying encounter from a different source.
+    model: cms_chronic_conditions__stg_cms_chronic_condition_hiv_aids
+    given:
+      - input: ref('the_tuva_project', 'core__encounter')
+        format: sql
+        rows: |
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          select
+              'person-1' as person_id
+            , 'encounter-a' as encounter_id
+            , cast('2026-01-01' as date) as encounter_start_date
+            , cast(null as {{ string_type }}) as drg_code
+            , cast(null as {{ string_type }}) as drg_code_type
+            , 'source-a' as data_source
+          union all
+          select
+              'person-1', 'encounter-b', cast('2026-02-01' as date)
+            , cast(null as {{ string_type }}), cast(null as {{ string_type }})
+            , 'source-b'
+      - input: ref('the_tuva_project', 'core__condition')
+        format: sql
+        rows: |
+          select
+              'encounter-a' as encounter_id
+            , 'R75' as normalized_code
+            , 'ICD-10-CM' as code_system
+            , 'source-a' as data_source
+          union all
+          select 'encounter-a', 'B20', 'ICD-10-CM', 'source-a'
+          union all
+          select 'encounter-b', 'B20', 'ICD-10-CM', 'source-b'
+      - input: ref('cms_chronic_conditions__cms_chronic_conditions_hierarchy')
+        format: sql
+        rows: |
+          select
+              'Chronic' as chronic_condition_type
+            , 'Infectious disease' as condition_category
+            , 'Human Immunodeficiency Virus and/or Acquired Immunodeficiency Syndrome (HIV/AIDS)' as condition
+            , 'Include' as inclusion_type
+            , 'ICD-10-CM' as code_system
+            , 'R75' as code
+          union all
+          select
+              'Chronic', 'Infectious disease'
+            , 'Human Immunodeficiency Virus and/or Acquired Immunodeficiency Syndrome (HIV/AIDS)'
+            , 'Include', 'ICD-10-CM', 'B20'
+    expect:
+      rows:
+        - person_id: person-1
+          encounter_id: encounter-a
+          encounter_start_date: '2026-01-01'
+          condition: Human Immunodeficiency Virus and/or Acquired Immunodeficiency Syndrome (HIV/AIDS)
+          data_source: source-a
+        - person_id: person-1
+          encounter_id: encounter-b
+          encounter_start_date: '2026-02-01'
+          condition: Human Immunodeficiency Virus and/or Acquired Immunodeficiency Syndrome (HIV/AIDS)
+          data_source: source-b
+
+  - name: test_oud_excludes_only_ambiguous_naltrexone_in_the_same_source
+    description: >
+      An ambiguous Naltrexone row is excluded without removing other OUD
+      medication evidence or Naltrexone evidence from another source.
+    model: cms_chronic_conditions__stg_cms_chronic_condition_oud
+    given:
+      - input: ref('the_tuva_project', 'core__encounter')
+        format: sql
+        rows: |
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          select
+              cast(null as {{ string_type }}) as person_id
+            , cast(null as {{ string_type }}) as encounter_id
+            , cast(null as date) as encounter_start_date
+            , cast(null as {{ string_type }}) as data_source
+          where 1 = 0
+      - input: ref('the_tuva_project', 'core__condition')
+        format: sql
+        rows: |
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          select
+              cast(null as {{ string_type }}) as encounter_id
+            , cast(null as {{ string_type }}) as normalized_code
+            , cast(null as {{ string_type }}) as code_system
+            , cast(null as {{ string_type }}) as data_source
+          where 1 = 0
+      - input: ref('the_tuva_project', 'core__procedure')
+        format: sql
+        rows: |
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          select
+              cast(null as {{ string_type }}) as encounter_id
+            , cast(null as {{ string_type }}) as normalized_code
+            , cast(null as {{ string_type }}) as code_system
+            , cast(null as {{ string_type }}) as data_source
+          where 1 = 0
+      - input: ref('the_tuva_project', 'core__pharmacy_claim')
+        format: sql
+        rows: |
+          select
+              'person-1' as person_id
+            , cast('2026-01-01' as date) as paid_date
+            , '00056001122' as ndc_code
+            , 'source-a' as data_source
+          union all
+          select 'person-1', cast('2026-01-02' as date), '99999999999', 'source-a'
+          union all
+          select 'person-1', cast('2026-01-03' as date), '00056001122', 'source-b'
+      - input: ref('cms_chronic_conditions__stg_cms_chronic_condition_all')
+        format: sql
+        rows: |
+          select
+              'person-1' as person_id
+            , 'Alcohol Use Disorders' as condition
+            , 'source-a' as data_source
+      - input: ref('cms_chronic_conditions__cms_chronic_conditions_hierarchy')
+        format: sql
+        rows: |
+          select
+              'Chronic' as chronic_condition_type
+            , 'Substance use' as condition_category
+            , 'Opioid Use Disorder (OUD)' as condition
+            , 'Include' as inclusion_type
+            , 'NDC' as code_system
+            , '00056001122' as code
+          union all
+          select
+              'Chronic', 'Substance use', 'Opioid Use Disorder (OUD)'
+            , 'Include', 'NDC', '99999999999'
+    expect:
+      rows:
+        - person_id: person-1
+          encounter_id: null
+          encounter_start_date: '2026-01-02'
+          condition: Opioid Use Disorder (OUD)
+          data_source: source-a
+        - person_id: person-1
+          encounter_id: null
+          encounter_start_date: '2026-01-03'
+          condition: Opioid Use Disorder (OUD)
+          data_source: source-b
