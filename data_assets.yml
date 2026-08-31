@@ -1,5 +1,0 @@
-schema_version: 1
-package: cms-chronic-conditions
-assets:
-  - seed: cms_chronic_conditions__cms_chronic_conditions_hierarchy
-    path: cms_chronic_conditions__cms_chronic_conditions_hierarchy.csv.gz

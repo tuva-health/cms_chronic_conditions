@@ -1,8 +1,7 @@
 name: Create Release
 
 # A version change on main starts release creation. workflow_dispatch provides
-# main-only recovery after assets are published for an earlier failed attempt.
-# Both paths require every declared data file in all three public stores.
+# main-only recovery after an earlier failed attempt.
 on:
   push:
     branches:
@@ -20,8 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    env:
-      PACKAGE_SLUG: cms-chronic-conditions
     steps:
       - name: Require main branch
         run: |
@@ -33,9 +30,6 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
-
-      - name: Verify package contract
-        run: python3 scripts/test_package_contract.py
 
       - name: Check version change
         id: check_version
@@ -110,37 +104,6 @@ jobs:
             echo "Release commit ${GITHUB_SHA} is not current main ${main_commit}" >&2
             exit 1
           fi
-
-      - name: Verify data asset files exist
-        if: steps.check_version.outputs.changed == 'true'
-        env:
-          PACKAGE_VERSION: ${{ steps.check_version.outputs.version }}
-        run: |
-          set -euo pipefail
-
-          public_roots=(
-            "https://tuva-public-resources.s3.amazonaws.com"
-            "https://storage.googleapis.com/tuva-public-resources"
-            "https://tuvapublicresources.blob.core.windows.net/tuva-public-resources"
-          )
-
-          asset_count=0
-          while IFS= read -r asset_path; do
-            asset_count=$((asset_count + 1))
-            for public_root in "${public_roots[@]}"; do
-              url="${public_root}/${PACKAGE_SLUG}/${PACKAGE_VERSION}/${asset_path}"
-              curl --fail --silent --show-error --location --head \
-                --proto '=https' --tlsv1.2 \
-                --connect-timeout 15 --max-time 120 \
-                --retry 3 --retry-all-errors \
-                --output /dev/null "${url}"
-            done
-          done < <(
-            sed -nE 's/^[[:space:]]+path:[[:space:]]+([^[:space:]#]+).*$/\1/p' \
-              data_assets.yml
-          )
-          test "${asset_count}" -gt 0
-          echo "Verified ${asset_count} data asset files in all three public stores"
 
       - name: Create tag
         if: steps.check_version.outputs.changed == 'true'

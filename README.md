@@ -25,17 +25,15 @@ To run this package, please refer to the instructions in the Tuva Project [READM
 
 ## Data assets
 
-Released seed contents are stored as an immutable snapshot under
-`s3://tuva-public-resources/cms-chronic-conditions/<package-version>/`.
-The checked-in CSV file defines the dbt loader header, and `data_assets.yml`
-is the publisher inventory. Dataset changes are released with a new package
-version.
+Seed contents are stored under
+`s3://tuva-public-resources/data-marts/cms-chronic-conditions/<asset-version>/`
+and mirrored to GCS and Azure. The checked-in CSV file contains only the
+header required by dbt.
 
-On a version-changing push to `main`, or a manual recovery from current
-`main`, release automation verifies that every path in `data_assets.yml`
-exists under the package-version folder in S3, GCS, and Azure before creating
-the `v<package-version>` tag and draft GitHub release. Each package version
-maps directly to its public data-asset folder.
+`cms_chronic_conditions_data_asset_version` selects the folder and defaults to
+`1.0.0`. Package code and data assets are versioned independently and are
+coordinated manually. Cloud manifests record the asset inventory, provenance,
+and release status; dbt loads the configured path without reading them.
 
 ## 🙋🏻‍♀️ ****How is this package maintained and how do I contribute?****
 
