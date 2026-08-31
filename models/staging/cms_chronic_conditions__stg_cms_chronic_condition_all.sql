@@ -14,13 +14,13 @@ patient_encounters as (
         , encounter.data_source
         , replace(condition.normalized_code,'.','') as condition_code
         , condition.code_system as condition_code_type
-        , replace(procedure.normalized_code,'.','') as procedure_code
-        , procedure.code_system as procedure_code_type
+        , replace(procedure_records.normalized_code,'.','') as procedure_code
+        , procedure_records.code_system as procedure_code_type
     from {{ var('encounter') }} as encounter
          left join {{ var('condition') }} as condition
              on encounter.encounter_id = condition.encounter_id
-         left join {{ var('procedure') }}  as procedure
-             on encounter.encounter_id = procedure.encounter_id
+         left join {{ var('procedure') }} as procedure_records
+             on encounter.encounter_id = procedure_records.encounter_id
 
 ),
 
@@ -97,9 +97,9 @@ exclusions_diagnosis as (
 inclusions_unioned as (
 
     select * from inclusions_diagnosis
-    union distinct
+    union
     select * from inclusions_procedure
-    union distinct
+    union
     select * from inclusions_ms_drg
 
 )

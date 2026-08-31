@@ -98,9 +98,9 @@ exception_diagnosis as (
 inclusions_unioned as (
 
     select * from inclusions_diagnosis
-    union distinct
+    union
     select * from inclusions_ms_drg
-    union distinct
+    union
     select * from exception_diagnosis
 
 )
