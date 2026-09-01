@@ -12,313 +12,323 @@ models:
       tags: cms_chronic_conditions
       materialized: table
     description: >
-      This model pivots conditions on the patient level (i.e. one record per 
-      patient) with flags for each chronic condition.
+      This model pivots conditions to one record per patient and data source,
+      with flags for each chronic condition.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - person_id
+              - data_source
     columns:
         - name: person_id
           description: Unique ID for the patient.
           data_tests:
-            - unique
+            - not_null
+
+        - name: data_source
+          description: User-defined name identifying the source dataset.
+          data_tests:
             - not_null
         - name: acute_myocardial_infarction
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: adhd_conduct_disorders_and_hyperkinetic_syndrome
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: alcohol_use_disorders
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: alzheimers_disease
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: anemia
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: anxiety_disorders
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: asthma
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: atrial_fibrillation_and_flutter
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: autism_spectrum_disorders
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: benign_prostatic_hyperplasia
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: bipolar_disorder
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: cancer_breast
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: cancer_colorectal
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: cancer_endometrial
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: cancer_lung
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: cancer_prostate
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: cancer_urologic_kidney_renal_pelvis_and_ureter
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: cataract
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: cerebral_palsy
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: chronic_kidney_disease
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: chronic_obstructive_pulmonary_disease
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: cystic_fibrosis_and_other_metabolic_developmental_disorders
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: depression_bipolar_or_other_depressive_mood_disorders
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: depressive_disorders
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: diabetes
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: drug_use_disorders
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: epilepsy
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: fibromyalgia_and_chronic_pain_and_fatigue
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: glaucoma
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: heart_failure_and_non_ischemic_heart_disease
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hepatitis_a
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hepatitis_b_acute_or_unspecified
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hepatitis_b_chronic
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hepatitis_c_acute
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hepatitis_c_chronic
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hepatitis_c_unspecified
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hepatitis_d
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hepatitis_e
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hip_pelvic_fracture
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: human_immunodeficiency_virus_and_or_acquired_immunodeficiency_syndrome_hiv_aids #noqa
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hyperlipidemia
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hypertension
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: hypothyroidism
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: intellectual_disabilities_and_related_conditions
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: ischemic_heart_disease
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: learning_disabilities
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: leukemias_and_lymphomas
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: liver_disease_cirrhosis_and_other_liver_conditions_except_viral_hepatitis #noqa
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: migraine_and_chronic_headache
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: mobility_impairments
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: multiple_sclerosis_and_transverse_myelitis
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: muscular_dystrophy
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: non_alzheimers_dementia
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: obesity
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: opioid_use_disorder_oud
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: osteoporosis_with_or_without_pathological_fracture
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: other_developmental_delays
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: parkinsons_disease_and_secondary_parkinsonism
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: peripheral_vascular_disease_pvd
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: personality_disorders
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: pneumonia_all_cause
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: post_traumatic_stress_disorder_ptsd
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: pressure_and_chronic_ulcers
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: rheumatoid_arthritis_osteoarthritis
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: schizophrenia
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: schizophrenia_and_other_psychotic_disorders
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: sensory_blindness_and_visual_impairment
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: sensory_deafness_and_hearing_impairment
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: sickle_cell_disease
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: spina_bifida_and_other_congenital_anomalies_of_the_nervous_system #noqa
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: spinal_cord_injury
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: stroke_transient_ischemic_attack
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: tobacco_use
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: traumatic_brain_injury_and_nonpsychotic_mental_disorders_due_to_brain_damage #noqa
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
         - name: viral_hepatitis_general
           description: chronic condition flag 1 or 0
-          data_type: boolean
+          data_type: integer
 
   - name: cms_chronic_conditions__cms_chronic_conditions_long
     config:
@@ -332,10 +342,17 @@ models:
       materialized: table
     description: >
       This model unions condition flags from the 3 upstream stage models that
-      calculate them.
+      calculate them. Rows retain their source; medication-derived OUD rows do
+      not have an encounter identifier.
     data_tests:
-      - unique:
-          column_name: "(person_id || encounter_id || encounter_start_date || condition)"
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - person_id
+              - encounter_id
+              - encounter_start_date
+              - condition
+              - data_source
 
     columns:
         - name: person_id
@@ -344,9 +361,9 @@ models:
             - not_null
 
         - name: encounter_id
-          description: Unique ID for each encounter (visit).
-          data_tests:
-            - not_null
+          description: >
+            Unique ID for the qualifying encounter. Null for medication-derived
+            OUD evidence that does not belong to an encounter.
 
         - name: encounter_start_date
           description: The date the encounter began.
@@ -378,6 +395,8 @@ models:
         - name: data_source
           description: >
             Indicates the name of the source dataset (e.g. Medicare Claims).
+          data_tests:
+            - not_null
 
 
 ##### Stage
@@ -393,8 +412,8 @@ models:
       tags: cms_chronic_conditions
       materialized: table
     description: >
-      This model contains logic for all chronic conditions where 
-      additional_logic is not 'None'. This model includes standard exclusions
+      This model contains logic for chronic conditions where
+      additional_logic is 'None'. This model includes standard exclusions
       and maps ICD-10-CM diagnosis codes, ICD-10-PCS procedure codes,
       HCPCS codes, and MS DRG codes to chronic conditions.
 
@@ -405,7 +424,7 @@ models:
             - not_null
 
         - name: encounter_id
-          description: Unique ID for each encounter (visit).
+          description: Unique ID for each qualifying encounter.
           data_tests:
             - not_null
 
@@ -429,6 +448,8 @@ models:
         - name: data_source
           description: >
             Indicates the name of the source dataset (e.g. Medicare Claims).
+          data_tests:
+            - not_null
 
   - name: cms_chronic_conditions__stg_cms_chronic_condition_hiv_aids
     config:
@@ -479,6 +500,8 @@ models:
         - name: data_source
           description: >
             Indicates the name of the source dataset (e.g. Medicare Claims).
+          data_tests:
+            - not_null
 
   - name: cms_chronic_conditions__stg_cms_chronic_condition_oud
     config:
@@ -502,9 +525,9 @@ models:
             - not_null
 
         - name: encounter_id
-          description: Unique ID for each encounter (visit).
-          data_tests:
-            - not_null
+          description: >
+            Unique ID for the qualifying encounter. Null for medication-derived
+            evidence that does not belong to an encounter.
 
         - name: encounter_start_date
           description: The date the encounter began.
@@ -528,3 +551,5 @@ models:
         - name: data_source
           description: >
             Indicates the name of the source dataset (e.g. Medicare Claims).
+          data_tests:
+            - not_null

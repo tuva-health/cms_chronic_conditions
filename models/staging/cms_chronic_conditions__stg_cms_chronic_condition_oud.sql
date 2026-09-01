@@ -22,23 +22,46 @@ with chronic_conditions as (
 
 ),
 
-patient_encounters as (
+encounters as (
+
+    select
+          person_id
+        , encounter_id
+        , encounter_start_date
+        , data_source
+    from {{ var('encounter') }}
+
+),
+
+patient_conditions as (
 
     select
           encounter.person_id
         , encounter.encounter_id
         , encounter.encounter_start_date
-        , encounter.drg_code as ms_drg_code
         , encounter.data_source
-        , replace(condition.normalized_code,'.','') as condition_code
+        , replace(condition.normalized_code, '.', '') as condition_code
         , condition.code_system as condition_code_type
-        , replace(procedure_records.normalized_code,'.','') as procedure_code
+    from encounters as encounter
+    inner join {{ var('condition') }} as condition
+        on encounter.encounter_id = condition.encounter_id
+        and encounter.data_source = condition.data_source
+
+),
+
+patient_procedures as (
+
+    select
+          encounter.person_id
+        , encounter.encounter_id
+        , encounter.encounter_start_date
+        , encounter.data_source
+        , replace(procedure_records.normalized_code, '.', '') as procedure_code
         , procedure_records.code_system as procedure_code_type
-    from {{ var('encounter') }} as encounter
-         left join {{ var('condition') }} as condition
-             on encounter.encounter_id = condition.encounter_id
-         left join {{ var('procedure') }} as procedure_records
-             on encounter.encounter_id = procedure_records.encounter_id
+    from encounters as encounter
+    inner join {{ var('procedure') }} as procedure_records
+        on encounter.encounter_id = procedure_records.encounter_id
+        and encounter.data_source = procedure_records.data_source
 
 ),
 
@@ -48,7 +71,7 @@ patient_medications as (
           cast(null as {{ dbt.type_string() }}) as encounter_id
         , person_id
         , cast(paid_date as date) as encounter_start_date
-        , replace(ndc_code,'.','') as ndc_code
+        , replace(ndc_code, '.', '') as ndc_code
         , data_source
     from {{ var('pharmacy_claim') }}
 
@@ -57,47 +80,84 @@ patient_medications as (
 inclusions_diagnosis as (
 
     select
-          patient_encounters.person_id
-        , patient_encounters.encounter_id
-        , patient_encounters.encounter_start_date
-        , patient_encounters.data_source
+          patient_conditions.person_id
+        , patient_conditions.encounter_id
+        , patient_conditions.encounter_start_date
+        , patient_conditions.data_source
         , chronic_conditions.chronic_condition_type
         , chronic_conditions.condition_category
         , chronic_conditions.condition
-    from patient_encounters
-         inner join chronic_conditions
-             on patient_encounters.condition_code = chronic_conditions.code
+    from patient_conditions
+    inner join chronic_conditions
+        on patient_conditions.condition_code = chronic_conditions.code
+        and lower(patient_conditions.condition_code_type) =
+            lower(chronic_conditions.code_system)
     where chronic_conditions.inclusion_type = 'Include'
-    and chronic_conditions.code_system = 'ICD-10-CM'
+      and lower(chronic_conditions.code_system) = 'icd-10-cm'
 
 ),
 
 inclusions_procedure as (
 
     select
-          patient_encounters.person_id
-        , patient_encounters.encounter_id
-        , patient_encounters.encounter_start_date
-        , patient_encounters.data_source
+          patient_procedures.person_id
+        , patient_procedures.encounter_id
+        , patient_procedures.encounter_start_date
+        , patient_procedures.data_source
         , chronic_conditions.chronic_condition_type
         , chronic_conditions.condition_category
         , chronic_conditions.condition
-    from patient_encounters
-         inner join chronic_conditions
-             on patient_encounters.procedure_code = chronic_conditions.code
+    from patient_procedures
+    inner join chronic_conditions
+        on patient_procedures.procedure_code = chronic_conditions.code
+        and lower(patient_procedures.procedure_code_type) =
+            lower(chronic_conditions.code_system)
     where chronic_conditions.inclusion_type = 'Include'
-    and chronic_conditions.code_system in ('ICD-10-PCS', 'HCPCS')
+      and lower(chronic_conditions.code_system) in ('icd-10-pcs', 'hcpcs')
+
+),
+
+exclusions_other_chronic_conditions as (
+
+    select distinct
+          person_id
+        , data_source
+    from {{ ref('cms_chronic_conditions__stg_cms_chronic_condition_all') }}
+    where condition in (
+          'Alcohol Use Disorders'
+        , 'Drug Use Disorders'
+    )
+
+),
+
+excluded_naltrexone_patients as (
+
+    select distinct
+          patient_medications.person_id
+        , patient_medications.data_source
+    from patient_medications
+    inner join chronic_conditions
+        on patient_medications.ndc_code = chronic_conditions.code
+    inner join exclusions_other_chronic_conditions
+        on patient_medications.person_id = exclusions_other_chronic_conditions.person_id
+        and patient_medications.data_source = exclusions_other_chronic_conditions.data_source
+    left join inclusions_diagnosis
+        on patient_medications.person_id = inclusions_diagnosis.person_id
+        and patient_medications.data_source = inclusions_diagnosis.data_source
+    where chronic_conditions.inclusion_type = 'Include'
+      and lower(chronic_conditions.code_system) = 'ndc'
+      and chronic_conditions.code in {{ naltrexone_ndcs }}
+      and inclusions_diagnosis.person_id is null
 
 ),
 
 /*
-    Exclusion logic: Naltrexone NDCs are excluded if there is evidence of an
-    alcohol or other drug use disorder where opioid DX is not present
-
-    This CTE excludes medication encounters with the exception codes for
-    Naltrexone. Those encounters will be evaluated separately.
+    Naltrexone qualifies unless alcohol or other drug-use evidence in the same
+    source makes it ambiguous and there is no opioid-use diagnosis. Apply the
+    exclusion only to the Naltrexone row; other qualifying OUD evidence remains.
 */
 inclusions_medication as (
+
     select
           patient_medications.person_id
         , patient_medications.encounter_id
@@ -107,56 +167,17 @@ inclusions_medication as (
         , chronic_conditions.condition_category
         , chronic_conditions.condition
     from patient_medications
-         inner join chronic_conditions
-             on patient_medications.ndc_code = chronic_conditions.code
+    inner join chronic_conditions
+        on patient_medications.ndc_code = chronic_conditions.code
+    left join excluded_naltrexone_patients
+        on patient_medications.person_id = excluded_naltrexone_patients.person_id
+        and patient_medications.data_source = excluded_naltrexone_patients.data_source
     where chronic_conditions.inclusion_type = 'Include'
-    and chronic_conditions.code_system = 'NDC'
-    and chronic_conditions.code not in {{ naltrexone_ndcs }}
-
-),
-
-/*
-    Exclusion logic: Naltrexone NDCs are excluded if there is evidence of an
-    alcohol or other drug use disorder where opioid DX is not present
-
-    This CTE includes patients with evidence of the chronic conditions Alcohol
-    Use Disorders or Drug Use Disorders.
-*/
-exclusions_other_chronic_conditions as (
-
-    select distinct person_id
-    from {{ ref('cms_chronic_conditions__stg_cms_chronic_condition_all') }}
-    where condition in (
-          'Alcohol Use Disorders'
-        , 'Drug Use Disorders'
-    )
-
-),
-
-/*
-    Exclusion logic: Naltrexone NDCs are excluded if there is evidence of an
-    alcohol or other drug use disorder where opioid DX is not present
-
-    This CTE creates the exclusion list which consists of patients with
-    medication encounters for Naltrexone having Alcohol Use Disorder or Drug
-    Use Disorder and missing the Opioid Use Disorder diagnosis codes.
-*/
-exclusions_medication as (
-    select distinct
-          patient_medications.person_id
-    from patient_medications
-         inner join chronic_conditions
-             on patient_medications.ndc_code = chronic_conditions.code
-         inner join exclusions_other_chronic_conditions
-             on patient_medications.person_id =
-                exclusions_other_chronic_conditions.person_id
-         left join inclusions_diagnosis
-             on patient_medications.person_id =
-                inclusions_diagnosis.person_id
-    where chronic_conditions.inclusion_type = 'Include'
-    and chronic_conditions.code_system = 'NDC'
-    and chronic_conditions.code in {{ naltrexone_ndcs }}
-    and inclusions_diagnosis.person_id is null
+      and lower(chronic_conditions.code_system) = 'ndc'
+      and (
+        chronic_conditions.code not in {{ naltrexone_ndcs }}
+        or excluded_naltrexone_patients.person_id is null
+      )
 
 ),
 
@@ -190,6 +211,3 @@ select distinct
     , cast(inclusions_unioned.condition as {{ dbt.type_string() }}) as condition
     , cast(inclusions_unioned.data_source as {{ dbt.type_string() }}) as data_source
 from inclusions_unioned
-     left join exclusions_medication
-         on inclusions_unioned.person_id = exclusions_medication.person_id
-where exclusions_medication.person_id is null

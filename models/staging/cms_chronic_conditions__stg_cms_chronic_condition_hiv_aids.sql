@@ -7,91 +7,105 @@ with chronic_conditions as (
 
 ),
 
-patient_encounters as (
+encounters as (
+
+    select
+          person_id
+        , encounter_id
+        , encounter_start_date
+        , drg_code
+        , drg_code_type
+        , data_source
+    from {{ var('encounter') }}
+
+),
+
+patient_conditions as (
 
     select
           encounter.person_id
         , encounter.encounter_id
         , encounter.encounter_start_date
-        , encounter.drg_code as ms_drg_code
         , encounter.data_source
-        , replace(condition.normalized_code,'.','') as condition_code
+        , replace(condition.normalized_code, '.', '') as condition_code
         , condition.code_system as condition_code_type
-    from {{ var('encounter') }} as encounter
-         left join {{ var('condition') }} as condition
-             on encounter.encounter_id = condition.encounter_id
+    from encounters as encounter
+    inner join {{ var('condition') }} as condition
+        on encounter.encounter_id = condition.encounter_id
+        and encounter.data_source = condition.data_source
 
 ),
 
 /*
     Exception logic: a claim with the diagnosis code R75 requires a second
-    qualifying claim that is not R75 (a screening code)
-
-    This CTE excludes encounters with the exception code. Those encounters
-    will be evaluated separately.
+    qualifying claim that is not R75 (a screening code).
 */
 inclusions_diagnosis as (
 
     select
-          patient_encounters.person_id
-        , patient_encounters.encounter_id
-        , patient_encounters.encounter_start_date
-        , patient_encounters.data_source
+          patient_conditions.person_id
+        , patient_conditions.encounter_id
+        , patient_conditions.encounter_start_date
+        , patient_conditions.data_source
         , chronic_conditions.chronic_condition_type
         , chronic_conditions.condition_category
         , chronic_conditions.condition
-    from patient_encounters
-         inner join chronic_conditions
-             on patient_encounters.condition_code = chronic_conditions.code
+    from patient_conditions
+    inner join chronic_conditions
+        on patient_conditions.condition_code = chronic_conditions.code
+        and lower(patient_conditions.condition_code_type) =
+            lower(chronic_conditions.code_system)
     where chronic_conditions.inclusion_type = 'Include'
-    and chronic_conditions.code_system = 'ICD-10-CM'
-    and chronic_conditions.code <> 'R75'
+      and lower(chronic_conditions.code_system) = 'icd-10-cm'
+      and chronic_conditions.code <> 'R75'
 
 ),
 
 inclusions_ms_drg as (
 
     select
-          patient_encounters.person_id
-        , patient_encounters.encounter_id
-        , patient_encounters.encounter_start_date
-        , patient_encounters.data_source
+          encounters.person_id
+        , encounters.encounter_id
+        , encounters.encounter_start_date
+        , encounters.data_source
         , chronic_conditions.chronic_condition_type
         , chronic_conditions.condition_category
         , chronic_conditions.condition
-    from patient_encounters
-         inner join chronic_conditions
-             on patient_encounters.ms_drg_code = chronic_conditions.code
+    from encounters
+    inner join chronic_conditions
+        on encounters.drg_code = chronic_conditions.code
+        and lower(encounters.drg_code_type) = lower(chronic_conditions.code_system)
     where chronic_conditions.inclusion_type = 'Include'
-    and chronic_conditions.code_system = 'MS-DRG'
+      and lower(chronic_conditions.code_system) = 'ms-drg'
 
 ),
 
 /*
-    Exception logic: a claim with the diagnosis code R75 requires a second
-    qualifying claim that is not R75 (a screening code)
-
-    This CTE includes encounters with the exception code only where that
-    patient has another encounter that is not R75.
+    Include R75 only when another encounter in the same data source has a
+    qualifying non-R75 HIV diagnosis.
 */
 exception_diagnosis as (
 
     select
-          patient_encounters.person_id
-        , patient_encounters.encounter_id
-        , patient_encounters.encounter_start_date
-        , patient_encounters.data_source
+          patient_conditions.person_id
+        , patient_conditions.encounter_id
+        , patient_conditions.encounter_start_date
+        , patient_conditions.data_source
         , chronic_conditions.chronic_condition_type
         , chronic_conditions.condition_category
         , chronic_conditions.condition
-    from patient_encounters
-         inner join chronic_conditions
-             on patient_encounters.condition_code = chronic_conditions.code
-         inner join inclusions_diagnosis
-             on patient_encounters.person_id = inclusions_diagnosis.person_id
+    from patient_conditions
+    inner join chronic_conditions
+        on patient_conditions.condition_code = chronic_conditions.code
+        and lower(patient_conditions.condition_code_type) =
+            lower(chronic_conditions.code_system)
+    inner join inclusions_diagnosis
+        on patient_conditions.person_id = inclusions_diagnosis.person_id
+        and patient_conditions.data_source = inclusions_diagnosis.data_source
+        and patient_conditions.encounter_id <> inclusions_diagnosis.encounter_id
     where chronic_conditions.inclusion_type = 'Include'
-    and chronic_conditions.code_system = 'ICD-10-CM'
-    and chronic_conditions.code = 'R75'
+      and lower(chronic_conditions.code_system) = 'icd-10-cm'
+      and chronic_conditions.code = 'R75'
 
 ),
 
