@@ -4,3 +4,4 @@ dbt_packages/
 logs/
 dbt_packages/
 saved/
+dbt_internal_packages/

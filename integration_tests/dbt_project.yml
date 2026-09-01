@@ -24,3 +24,7 @@ clean-targets:
 models:
   integration_tests:
     +materialized: ephemeral
+
+flags:
+  require_generic_test_arguments_property: true
+  require_ref_searches_node_package_before_root: true
