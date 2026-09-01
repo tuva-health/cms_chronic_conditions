@@ -10,7 +10,7 @@ unit_tests:
       - input: ref('the_tuva_project', 'core__encounter')
         format: sql
         rows: |
-          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' %}
           select
               'person-1' as person_id
             , 'shared-encounter' as encounter_id
@@ -36,7 +36,7 @@ unit_tests:
       - input: ref('the_tuva_project', 'core__procedure')
         format: sql
         rows: |
-          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' %}
           select
               cast(null as {{ string_type }}) as encounter_id
             , cast(null as {{ string_type }}) as normalized_code
@@ -73,7 +73,7 @@ unit_tests:
       - input: ref('the_tuva_project', 'core__encounter')
         format: sql
         rows: |
-          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' %}
           select
               'person-1' as person_id
             , 'encounter-a' as encounter_id
@@ -135,7 +135,7 @@ unit_tests:
       - input: ref('the_tuva_project', 'core__encounter')
         format: sql
         rows: |
-          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' %}
           select
               cast(null as {{ string_type }}) as person_id
             , cast(null as {{ string_type }}) as encounter_id
@@ -145,7 +145,7 @@ unit_tests:
       - input: ref('the_tuva_project', 'core__condition')
         format: sql
         rows: |
-          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' %}
           select
               cast(null as {{ string_type }}) as encounter_id
             , cast(null as {{ string_type }}) as normalized_code
@@ -155,7 +155,7 @@ unit_tests:
       - input: ref('the_tuva_project', 'core__procedure')
         format: sql
         rows: |
-          {% set string_type = 'string' if target.type in ['bigquery', 'databricks'] else 'varchar' %}
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' %}
           select
               cast(null as {{ string_type }}) as encounter_id
             , cast(null as {{ string_type }}) as normalized_code
