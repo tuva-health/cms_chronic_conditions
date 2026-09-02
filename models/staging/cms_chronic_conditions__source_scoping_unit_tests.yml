@@ -42,6 +42,7 @@ unit_tests:
             , cast(null as {{ string_type }}) as normalized_code
             , cast(null as {{ string_type }}) as code_system
             , cast(null as {{ string_type }}) as data_source
+          from (select 1 as _tuva_fixture_row) as _tuva_fixture_row
           where 1 = 0
       - input: ref('cms_chronic_conditions__cms_chronic_conditions_hierarchy')
         format: sql
@@ -141,6 +142,7 @@ unit_tests:
             , cast(null as {{ string_type }}) as encounter_id
             , cast(null as date) as encounter_start_date
             , cast(null as {{ string_type }}) as data_source
+          from (select 1 as _tuva_fixture_row) as _tuva_fixture_row
           where 1 = 0
       - input: ref('the_tuva_project', 'core__condition')
         format: sql
@@ -151,6 +153,7 @@ unit_tests:
             , cast(null as {{ string_type }}) as normalized_code
             , cast(null as {{ string_type }}) as code_system
             , cast(null as {{ string_type }}) as data_source
+          from (select 1 as _tuva_fixture_row) as _tuva_fixture_row
           where 1 = 0
       - input: ref('the_tuva_project', 'core__procedure')
         format: sql
@@ -161,6 +164,7 @@ unit_tests:
             , cast(null as {{ string_type }}) as normalized_code
             , cast(null as {{ string_type }}) as code_system
             , cast(null as {{ string_type }}) as data_source
+          from (select 1 as _tuva_fixture_row) as _tuva_fixture_row
           where 1 = 0
       - input: ref('the_tuva_project', 'core__pharmacy_claim')
         format: sql
