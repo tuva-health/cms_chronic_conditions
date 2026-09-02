@@ -4,4 +4,4 @@ packages:
   # The consuming connector owns the production Core dependency. The package's
   # integration project pins Core only to provide its standalone test harness.
   - git: "https://github.com/tuva-health/tuva-core.git"
-    revision: d7f1ed0227003cba85914aadf8c2164320e52c77
+    revision: b6cda907b3694e58117861dee9a986f17c25cc49
