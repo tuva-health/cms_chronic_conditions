@@ -132,11 +132,12 @@ unit_tests:
       An ambiguous Naltrexone row is excluded without removing other OUD
       medication evidence or Naltrexone evidence from another source.
     model: cms_chronic_conditions__stg_cms_chronic_condition_oud
+    # Explicit widths prevent varchar(0) inference in Redshift's empty UNION branches.
     given:
       - input: ref('the_tuva_project', 'core__encounter')
         format: sql
         rows: |
-          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' %}
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar(256)' %}
           select
               cast(null as {{ string_type }}) as person_id
             , cast(null as {{ string_type }}) as encounter_id
@@ -147,7 +148,7 @@ unit_tests:
       - input: ref('the_tuva_project', 'core__condition')
         format: sql
         rows: |
-          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' %}
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar(256)' %}
           select
               cast(null as {{ string_type }}) as encounter_id
             , cast(null as {{ string_type }}) as normalized_code
@@ -158,7 +159,7 @@ unit_tests:
       - input: ref('the_tuva_project', 'core__procedure')
         format: sql
         rows: |
-          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' %}
+          {% set string_type = 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar(256)' %}
           select
               cast(null as {{ string_type }}) as encounter_id
             , cast(null as {{ string_type }}) as normalized_code
