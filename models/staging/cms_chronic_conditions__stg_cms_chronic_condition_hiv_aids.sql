@@ -112,13 +112,13 @@ exception_diagnosis as (
 inclusions_unioned as (
 
     select * from inclusions_diagnosis
-    {% if target.type == 'fabric' %}
+    {% if target.type in ['fabric', 'sqlserver'] %}
     union
     {% else %}
     union distinct
     {% endif %}
     select * from inclusions_ms_drg
-    {% if target.type == 'fabric' %}
+    {% if target.type in ['fabric', 'sqlserver'] %}
     union
     {% else %}
     union distinct
