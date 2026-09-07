@@ -40,21 +40,25 @@ dependency is `dbt-labs/dbt_utils`, used to construct the wide output.
 
 ## Installation
 
-Add the package to the root project's `packages.yml`:
+Declare Tuva Core and this package once in the root project's
+`packages.yml`. Use the immutable 1.0 release tags:
 
 ```yaml
 packages:
-  - package: tuva-health/cms_chronic_conditions
-    version: 0.2.0
+  - git: "https://github.com/tuva-health/tuva-core.git"
+    revision: "v1.0.0"
+  - git: "https://github.com/tuva-health/cms_chronic_conditions.git"
+    revision: "v1.0.0"
 ```
 
-Before a release is available from the dbt Package Hub, install that release
-directly from GitHub:
+After these releases are available on dbt Hub, the equivalent installation is:
 
 ```yaml
 packages:
-  - git: "https://github.com/tuva-health/cms_chronic_conditions.git"
-    revision: v0.2.0
+  - package: tuva-health/the_tuva_project
+    version: 1.0.0
+  - package: tuva-health/cms_chronic_conditions
+    version: 1.0.0
 ```
 
 Then resolve dependencies and build the package from the root project:
@@ -106,7 +110,7 @@ s3://tuva-public-resources/data-marts/cms-chronic-conditions/1.0.0/
 ```
 
 The same snapshot is mirrored to GCS and Azure. Package code and data assets
-have independent version numbers; the `0.2.0` package release intentionally
+have independent version numbers; the `1.0.0` package release intentionally
 uses the `1.0.0` data-asset snapshot. Change the asset-version variable only
 when testing another published, compatible snapshot.
 
